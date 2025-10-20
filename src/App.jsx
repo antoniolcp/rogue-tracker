@@ -89,6 +89,36 @@ function App() {
   return (
     <div className="App">
       <header className="hero-section">
+        <img
+          className="gomes"
+          src="/ChatGPT_Image_Oct_20__2025__01_07_23_PM-removebg-preview.png"
+          alt="Rogue Tracker Logo"
+        />
+        <img
+          className="top-left-logo-secondary"
+          src="/ChatGPT_Image_Oct_20__2025__01_35_52_PM-removebg-preview.png"
+          alt="Left Top Secondary"
+        />
+        <img
+          className="top-left-logo-bottom"
+          src="/ChatGPT_Image_Oct_20__2025__07_12_53_PM-removebg-preview.png"
+          alt="Left Bottom"
+        />
+        <img
+          className="ben"
+          src="/ChatGPT_Image_Oct_20__2025__03_52_06_PM-removebg-preview.png"
+          alt="Left Bottom Right"
+        />
+        <img
+          className="gama"
+          src="/ChatGPT_Image_Oct_20__2025__07_42_05_PM-removebg-preview.png"
+          alt="Left Bottom Center"
+        />
+        <img
+          className="top-right-logo"
+          src="/ChatGPT_Image_Oct_20__2025__01_18_55_PM-removebg-preview.png"
+          alt="Top Right"
+        />
         <div className="hero-content">
           <h1 className="hero-title">
             <span className="los-text">Rogue </span>

@@ -38,6 +38,68 @@ body {
   overflow: hidden;
 }
 
+.gomes {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 140px;
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.top-right-logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 140px;
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.top-left-logo-secondary {
+  position: absolute;
+  top: 30px;
+  left: 220px; /* increased gap to the right of the first logo */
+  width: 120px; /* slightly smaller */
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.top-left-logo-bottom {
+  position: absolute;
+  top: 280px; /* positioned below the other two images */
+  left: 20px; 
+  width: 120px;
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.ben {
+  position: absolute;
+  top: 280px; /* same height as the bottom image */
+  left: 210px; /* positioned to the right of the bottom image */
+  width: 120px; /* same size as the bottom image */
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.gama {
+  position: absolute;
+  top: 500px; /* positioned below the two bottom images */
+  left: 20px; /* centered between the two bottom images */
+  width: 120px; /* same size as the other images */
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+
+
 .hero-section::before {
   content: '';
   position: absolute;
@@ -289,11 +351,34 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
+  
+  /* Ajustar imagens para tablets */
+  .gomes, .top-left-logo-secondary, .top-right-logo {
+    width: 100px;
+  }
+  
+  .ben, .gama, .top-left-logo-bottom {
+    width: 80px;
+  }
+  
+  .top-left-logo-secondary {
+    left: 130px;
+  }
+  
+  .ben {
+    left: 110px;
+  }
+  
+  .gama {
+    left: 10px;
+    top: 400px;
+  }
 }
 
 @media (max-width: 768px) {
   .hero-section {
     padding: 2rem 1rem;
+    min-height: 100vh;
   }
   
   .hero-title {
@@ -305,6 +390,45 @@ body {
     height: 150px;
     bottom: 10px;
     right: 10px;
+  }
+  
+  /* Ajustar imagens para mobile */
+  .gomes, .top-left-logo-secondary, .top-right-logo {
+    width: 60px;
+  }
+  
+  .ben, .gama, .top-left-logo-bottom {
+    width: 50px;
+  }
+  
+  .gomes {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .top-left-logo-secondary {
+    top: 10px;
+    left: 80px;
+  }
+  
+  .top-right-logo {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .top-left-logo-bottom {
+    top: 200px;
+    left: 10px;
+  }
+  
+  .ben {
+    top: 200px;
+    left: 70px;
+  }
+  
+  .gama {
+    top: 250px;
+    left: 10px;
   }
   
   .stats-grid {
@@ -326,6 +450,45 @@ body {
 @media (max-width: 480px) {
   .hero-title {
     font-size: 2.5rem;
+  }
+  
+  /* Ajustar imagens para mobile pequeno */
+  .gomes, .top-left-logo-secondary, .top-right-logo {
+    width: 50px;
+  }
+  
+  .ben, .gama, .top-left-logo-bottom {
+    width: 40px;
+  }
+  
+  .gomes {
+    top: 5px;
+    left: 5px;
+  }
+  
+  .top-left-logo-secondary {
+    top: 5px;
+    left: 65px;
+  }
+  
+  .top-right-logo {
+    top: 5px;
+    right: 5px;
+  }
+  
+  .top-left-logo-bottom {
+    top: 150px;
+    left: 5px;
+  }
+  
+  .ben {
+    top: 150px;
+    left: 55px;
+  }
+  
+  .gama {
+    top: 200px;
+    left: 5px;
   }
   
   .btn-primary, .btn-secondary {
