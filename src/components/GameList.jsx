@@ -17,6 +17,7 @@ const GameList = ({ onClose }) => {
     return () => unsubscribe();
   }, []);
 
+
   // Agrupar batalhas por data
   const groupBattlesByDate = () => {
     const groupedBattles = {};
@@ -136,13 +137,6 @@ const GameList = ({ onClose }) => {
     return playerScores[0].player;
   };
 
-  // Calcular número de MVPs por jogador
-  const calculatePlayerMVPs = (playerName) => {
-    return battles.filter(battle => {
-      const mvp = calculateMVP(battle);
-      return mvp && mvp.name === playerName;
-    }).length;
-  };
 
   return (
     <div className="game-list-overlay">

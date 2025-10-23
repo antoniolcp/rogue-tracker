@@ -79,6 +79,7 @@ export const updateBattle = async (battleId, updateData) => {
 };
 
 
+
 // Calcular estatísticas
 export const calculateStats = (battles) => {
   if (!battles || battles.length === 0) {
