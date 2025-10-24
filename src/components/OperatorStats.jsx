@@ -238,6 +238,19 @@ const OperatorStats = ({ onClose }) => {
     }).length;
   };
 
+  // Calcular número de MVPs que um jogador específico teve com um operador específico
+  const calculateIndividualOperatorMVPs = (playerName, operatorName) => {
+    const playerBattles = battles.filter(battle => 
+      battle.team1.some(p => p.name === playerName) || 
+      battle.team2.some(p => p.name === playerName)
+    );
+
+    return playerBattles.filter(battle => {
+      const mvp = calculateMVP(battle);
+      return mvp && mvp.name === playerName && mvp.operator === operatorName;
+    }).length;
+  };
+
   if (loading) {
     return (
       <div className="operator-stats-overlay">
@@ -377,7 +390,7 @@ const OperatorStats = ({ onClose }) => {
                             <td className="score">{operator.weightedScore.toFixed(1)}</td>
                             <td>{operator.avgDowns}</td>
                             <td>{formatNumber(operator.avgDamage)}</td>
-                            <td className="mvp">{calculateOperatorMVPs(operator.name)}</td>
+                            <td className="mvp">{calculateIndividualOperatorMVPs(selectedPlayer, operator.name)}</td>
                           </tr>
                         ))}
                       </tbody>
