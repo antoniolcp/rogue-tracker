@@ -214,24 +214,32 @@ const TeamManagement = ({ onClose }) => {
     
     // Calcular ranking de cada jogador com as percentagens especificadas
     const playersWithRank = selectedPlayersData.map(player => {
-      // Normalizar com base no range dos jogadores selecionados
-      // Win Rate (10%) - já está em percentagem
-      const winRateScore = ((player.winRate || 0) / 100) * 10;
+      // Todos os valores são normalizados para 0-1 baseado no range dos jogadores selecionados
+      // e depois multiplicados pelo seu peso percentual
+      
+      // Win Rate (10%) - normalizar de 0-100 para 0-1, depois aplicar 10%
+      const winRateNorm = (player.winRate || 0) / 100;
+      const winRateScore = winRateNorm * 10;
       
       // Downs (35%) - normalizar para o range dos jogadores selecionados
-      const normDowns = rangeDowns > 0 ? ((player.avgDowns || 0) - minDowns) / rangeDowns * 35 : 0;
+      const downsNorm = rangeDowns > 0 ? ((player.avgDowns || 0) - minDowns) / rangeDowns : 0;
+      const normDowns = downsNorm * 35;
       
       // Damage (30%) - normalizar para o range dos jogadores selecionados
-      const normDamage = rangeDamage > 0 ? ((player.avgDamage || 0) - minDamage) / rangeDamage * 30 : 0;
+      const damageNorm = rangeDamage > 0 ? ((player.avgDamage || 0) - minDamage) / rangeDamage : 0;
+      const normDamage = damageNorm * 30;
       
       // Revives (10%) - normalizar para o range dos jogadores selecionados
-      const normRevives = rangeRevives > 0 ? ((player.avgRevives || 0) - minRevives) / rangeRevives * 10 : 0;
+      const revivesNorm = rangeRevives > 0 ? ((player.avgRevives || 0) - minRevives) / rangeRevives : 0;
+      const normRevives = revivesNorm * 10;
       
       // Captures (10%) - normalizar para o range dos jogadores selecionados
-      const normCaptures = rangeCaptures > 0 ? ((player.avgCaptures || 0) - minCaptures) / rangeCaptures * 10 : 0;
+      const capturesNorm = rangeCaptures > 0 ? ((player.avgCaptures || 0) - minCaptures) / rangeCaptures : 0;
+      const normCaptures = capturesNorm * 10;
       
       // Assists (5%) - normalizar para o range dos jogadores selecionados
-      const normAssists = rangeAssists > 0 ? ((player.avgAssists || 0) - minAssists) / rangeAssists * 5 : 0;
+      const assistsNorm = rangeAssists > 0 ? ((player.avgAssists || 0) - minAssists) / rangeAssists : 0;
+      const normAssists = assistsNorm * 5;
       
       const totalScore = winRateScore + normDowns + normDamage + normRevives + normCaptures + normAssists;
       

@@ -143,7 +143,18 @@ const PlayerRanking = ({ onClose }) => {
   const calculatePlayerRanking = () => {
     // Se estiver em modo "por ronda", usar os dados do Firebase diretamente
     if (viewMode === 'round') {
-      const playerStats = players.map(player => {
+      // Filtrar jogadores com jogos suficientes
+      const validPlayers = players.filter(player => (player.totalGames || 0) >= minGames);
+      
+      if (validPlayers.length === 0) return [];
+      
+      // Calcular os valores MÁXIMOS reais de CADA métrica (podem ser de jogadores diferentes)
+      const maxDowns = Math.max(...validPlayers.map(p => p.avgDowns || 0), 1);
+      const maxDamage = Math.max(...validPlayers.map(p => p.avgDamage || 0), 1);
+      const maxRevives = Math.max(...validPlayers.map(p => p.avgRevives || 0), 1);
+      const maxCaptures = Math.max(...validPlayers.map(p => p.avgCaptures || 0), 1);
+      
+      const playerStats = validPlayers.map(player => {
         const playerData = {
           name: player.name,
           totalGames: player.totalGames || 0,
@@ -156,77 +167,92 @@ const PlayerRanking = ({ onClose }) => {
           favoriteOperator: player.favoriteOperator || ''
         };
         
-        // Calcular score com os pesos definidos
-        const winRateScore = (playerData.winRate / 100) * 35;
-        const downsScore = Math.min(playerData.avgDowns / 30, 1) * 35; // 30 downs = 100%
-        const damageScore = Math.min(playerData.avgDamage / 3000, 1) * 15; // 3000 damage = 100%
-        const revivesScore = Math.min(playerData.avgRevives / 10, 1) * 10; // 10 revives = 100%
-        const capturesScore = Math.min(playerData.avgCaptures / 5, 1) * 5; // 5 captures = 100%
+        // Calcular score: Win Rate usa 100% como referência, outras métricas usam o máximo real
+        const winRateScore = (playerData.winRate / 100) * 35; // 100% é sempre o ideal
+        const downsScore = (playerData.avgDowns / maxDowns) * 35;
+        const damageScore = (playerData.avgDamage / maxDamage) * 15;
+        const revivesScore = (playerData.avgRevives / maxRevives) * 10;
+        const capturesScore = (playerData.avgCaptures / maxCaptures) * 5;
         
         playerData.score = Math.round((winRateScore + downsScore + damageScore + revivesScore + capturesScore) * 100) / 100;
+        
+        // Arredondar para exibição apenas
+        playerData.avgDowns = Math.round(playerData.avgDowns * 10) / 10;
+        playerData.avgDamage = Math.round(playerData.avgDamage);
+        playerData.avgRevives = Math.round(playerData.avgRevives * 10) / 10;
+        playerData.avgCaptures = Math.round(playerData.avgCaptures * 10) / 10;
         
         return playerData;
       });
       
-      return playerStats
-        .filter(player => player.totalGames >= minGames)
-        .sort((a, b) => b.score - a.score);
+      return playerStats.sort((a, b) => b.score - a.score);
     }
     
     // Se estiver em modo "por jogo", calcular médias por jogo usando totalGames
-    const playerStats = players.map(player => {
-      // Calcular médias por jogo a partir das médias por ronda
-      // Se temos totalRounds e totalGames, podemos converter
+    // Primeiro, calcular médias por jogo de todos os jogadores para encontrar os máximos
+    const playersWithGameStats = players.map(player => {
       const totalRounds = player.totalRounds || 0;
       const totalGames = player.totalGames || 0;
       
-      // Se não tem totalRounds, significa que ainda não foi recalculado
-      // Nesse caso, usar os valores por jogo diretamente
       let avgDowns, avgDamage, avgRevives, avgCaptures;
       
       if (totalRounds > 0 && totalGames > 0) {
-        // Converter de média por ronda para média por jogo
-        // avgPorJogo = avgPorRonda * (totalRounds / totalGames)
         const roundsPerGame = totalRounds / totalGames;
         avgDowns = player.avgDowns ? (player.avgDowns * roundsPerGame) : 0;
         avgDamage = player.avgDamage ? (player.avgDamage * roundsPerGame) : 0;
         avgRevives = player.avgRevives ? (player.avgRevives * roundsPerGame) : 0;
         avgCaptures = player.avgCaptures ? (player.avgCaptures * roundsPerGame) : 0;
       } else {
-        // Fallback: usar os valores originais (se existirem)
         avgDowns = player.avgDowns || 0;
         avgDamage = player.avgDamage || 0;
         avgRevives = player.avgRevives || 0;
         avgCaptures = player.avgCaptures || 0;
       }
       
-      const playerData = {
+      return {
         name: player.name,
         totalGames: player.totalGames || 0,
         winRate: player.winRate || 0,
-        avgDowns: Math.round(avgDowns * 10) / 10,
-        avgDamage: Math.round(avgDamage * 10) / 10,
-        avgRevives: Math.round(avgRevives * 10) / 10,
-        avgCaptures: Math.round(avgCaptures * 10) / 10,
+        avgDowns,
+        avgDamage,
+        avgRevives,
+        avgCaptures,
         totalMVPs: calculatePlayerMVPs(player.name),
         favoriteOperator: player.favoriteOperator || ''
       };
-      
-      // Calcular score com os pesos definidos
-      const winRateScore = (playerData.winRate / 100) * 35;
-      const downsScore = Math.min(playerData.avgDowns / 30, 1) * 35; // 30 downs = 100%
-      const damageScore = Math.min(playerData.avgDamage / 3000, 1) * 15; // 3000 damage = 100%
-      const revivesScore = Math.min(playerData.avgRevives / 10, 1) * 10; // 10 revives = 100%
-      const capturesScore = Math.min(playerData.avgCaptures / 5, 1) * 5; // 5 captures = 100%
+    });
+    
+    // Filtrar jogadores com jogos suficientes
+    const validPlayers = playersWithGameStats.filter(p => p.totalGames >= minGames);
+    
+    if (validPlayers.length === 0) return [];
+    
+    // Calcular os valores MÁXIMOS reais de CADA métrica (podem ser de jogadores diferentes)
+    const maxDowns = Math.max(...validPlayers.map(p => p.avgDowns || 0), 1);
+    const maxDamage = Math.max(...validPlayers.map(p => p.avgDamage || 0), 1);
+    const maxRevives = Math.max(...validPlayers.map(p => p.avgRevives || 0), 1);
+    const maxCaptures = Math.max(...validPlayers.map(p => p.avgCaptures || 0), 1);
+    
+    // Calcular score: Win Rate usa 100% como referência, outras métricas usam o máximo real
+    const playerStats = validPlayers.map(playerData => {
+      const winRateScore = (playerData.winRate / 100) * 35; // 100% é sempre o ideal
+      const downsScore = (playerData.avgDowns / maxDowns) * 35;
+      const damageScore = (playerData.avgDamage / maxDamage) * 15;
+      const revivesScore = (playerData.avgRevives / maxRevives) * 10;
+      const capturesScore = (playerData.avgCaptures / maxCaptures) * 5;
       
       playerData.score = Math.round((winRateScore + downsScore + damageScore + revivesScore + capturesScore) * 100) / 100;
+      
+      // Arredondar para exibição apenas
+      playerData.avgDowns = Math.round(playerData.avgDowns * 10) / 10;
+      playerData.avgDamage = Math.round(playerData.avgDamage);
+      playerData.avgRevives = Math.round(playerData.avgRevives * 10) / 10;
+      playerData.avgCaptures = Math.round(playerData.avgCaptures * 10) / 10;
       
       return playerData;
     });
     
-    return playerStats
-      .filter(player => player.totalGames >= minGames)
-      .sort((a, b) => b.score - a.score);
+    return playerStats.sort((a, b) => b.score - a.score);
   };
 
   const formatNumber = (num) => {
@@ -235,7 +261,8 @@ const PlayerRanking = ({ onClose }) => {
   };
 
   const formatPercentage = (num) => {
-    return num ? `${num}%` : '0%';
+    if (!num) return '0%';
+    return `${Math.round(num)}%`;
   };
 
   // Calcular MVP de um jogo
