@@ -215,33 +215,33 @@ const PlayerStats = ({ onClose }) => {
                   </table>
                 </div>
 
-                {/* Médias por Jogo */}
+                {/* Médias por Ronda */}
                 <div className="stats-section">
-                  <h4>📊 Médias por Jogo</h4>
+                  <h4>📊 Médias por Ronda</h4>
                   <table className="stats-table">
                     <tbody>
                       <tr>
-                        <td>Elims/Jogo</td>
+                        <td>Elims/Ronda</td>
                         <td>{selectedPlayer.avgElims}</td>
                       </tr>
                       <tr>
-                        <td>Downs/Jogo</td>
+                        <td>Downs/Ronda</td>
                         <td>{selectedPlayer.avgDowns}</td>
                       </tr>
                       <tr>
-                        <td>Assists/Jogo</td>
+                        <td>Assists/Ronda</td>
                         <td>{selectedPlayer.avgAssists}</td>
                       </tr>
                       <tr>
-                        <td>Revives/Jogo</td>
+                        <td>Revives/Ronda</td>
                         <td>{selectedPlayer.avgRevives}</td>
                       </tr>
                       <tr>
-                        <td>Damage/Jogo</td>
+                        <td>Damage/Ronda</td>
                         <td>{formatNumber(selectedPlayer.avgDamage)}</td>
                       </tr>
                       <tr>
-                        <td>Captures/Jogo</td>
+                        <td>Captures/Ronda</td>
                         <td>{selectedPlayer.avgCaptures}</td>
                       </tr>
                     </tbody>

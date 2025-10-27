@@ -9,6 +9,7 @@ const PlayerRanking = ({ onClose }) => {
   const [loading, setLoading] = useState(true);
   const [minGames, setMinGames] = useState(1);
   const [activeTab, setActiveTab] = useState('overall'); // 'overall', 'winrate', 'downs', 'damage', 'revives', 'captures'
+  const [viewMode, setViewMode] = useState('round'); // 'round' (por ronda) ou 'game' (por jogo)
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,197 +37,194 @@ const PlayerRanking = ({ onClose }) => {
 
   // Calcular ranking específico por métrica
   const calculateSpecificRanking = (metric) => {
-    const playerStats = {};
-    
-    // Inicializar estatísticas de cada jogador
-    players.forEach(player => {
-      playerStats[player.name] = {
-        name: player.name,
-        totalGames: 0,
-        totalWins: 0,
-        totalDowns: 0,
-        totalDamage: 0,
-        totalRevives: 0,
-        totalCaptures: 0,
-        operators: new Map()
-      };
-    });
-
-    // Processar todas as batalhas
-    battles.forEach(battle => {
-      const allPlayers = [...battle.team1, ...battle.team2];
-      const isTeam1Winner = battle.result === 'win';
-      
-      allPlayers.forEach(player => {
-        if (playerStats[player.name]) {
-          const isWinner = (battle.team1.includes(player) && isTeam1Winner) || 
-                          (battle.team2.includes(player) && !isTeam1Winner);
-          
-          playerStats[player.name].totalGames++;
-          playerStats[player.name].totalWins += isWinner ? 1 : 0;
-          playerStats[player.name].totalDowns += player.downs || 0;
-          playerStats[player.name].totalDamage += player.damage || 0;
-          playerStats[player.name].totalRevives += player.revives || 0;
-          playerStats[player.name].totalCaptures += player.captures || 0;
-          
-          // Contar operadores
-          if (player.operator) {
-            const currentCount = playerStats[player.name].operators.get(player.operator) || 0;
-            playerStats[player.name].operators.set(player.operator, currentCount + 1);
-          }
-        }
-      });
-    });
-
-    // Calcular médias e score específico
-    Object.values(playerStats).forEach(player => {
-      if (player.totalGames > 0) {
-        player.winRate = Math.round((player.totalWins / player.totalGames) * 100);
-        player.avgDowns = Math.round((player.totalDowns / player.totalGames) * 10) / 10;
-        player.avgDamage = Math.round((player.totalDamage / player.totalGames) * 10) / 10;
-        player.avgRevives = Math.round((player.totalRevives / player.totalGames) * 10) / 10;
-        player.avgCaptures = Math.round((player.totalCaptures / player.totalGames) * 10) / 10;
-        player.totalMVPs = calculatePlayerMVPs(player.name);
+    // Se estiver em modo "por ronda", usar os dados do Firebase
+    if (viewMode === 'round') {
+      const playerStats = players.map(player => {
+        let avgValue = 0;
         
-        // Encontrar operador favorito
-        let favoriteOperator = '';
-        let maxUses = 0;
-        player.operators.forEach((count, operator) => {
-          if (count > maxUses) {
-            maxUses = count;
-            favoriteOperator = operator;
-          }
-        });
-        player.favoriteOperator = favoriteOperator;
-        
-        // Calcular score baseado na métrica específica
         switch(metric) {
           case 'winrate':
-            player.score = player.winRate;
+            avgValue = player.winRate || 0;
             break;
           case 'downs':
-            player.score = player.avgDowns;
+            avgValue = player.avgDowns || 0;
             break;
           case 'damage':
-            player.score = player.avgDamage;
+            avgValue = player.avgDamage || 0;
             break;
           case 'revives':
-            player.score = player.avgRevives;
+            avgValue = player.avgRevives || 0;
             break;
           case 'captures':
-            player.score = player.avgCaptures;
+            avgValue = player.avgCaptures || 0;
             break;
-          default:
-            player.score = 0;
         }
+        
+        return {
+          name: player.name,
+          totalGames: player.totalGames || 0,
+          winRate: player.winRate || 0,
+          avgDowns: player.avgDowns || 0,
+          avgDamage: player.avgDamage || 0,
+          avgRevives: player.avgRevives || 0,
+          avgCaptures: player.avgCaptures || 0,
+          totalMVPs: calculatePlayerMVPs(player.name),
+          favoriteOperator: player.favoriteOperator || '',
+          score: avgValue
+        };
+      });
+      
+      return playerStats
+        .filter(player => player.totalGames >= minGames)
+        .sort((a, b) => b.score - a.score);
+    }
+    
+    // Se estiver em modo "por jogo", calcular médias por jogo convertendo de por ronda
+    const playerStats = players.map(player => {
+      const totalRounds = player.totalRounds || 0;
+      const totalGames = player.totalGames || 0;
+      
+      // Converter de média por ronda para média por jogo
+      let avgDowns, avgDamage, avgRevives, avgCaptures;
+      
+      if (totalRounds > 0 && totalGames > 0) {
+        const roundsPerGame = totalRounds / totalGames;
+        avgDowns = player.avgDowns ? (player.avgDowns * roundsPerGame) : 0;
+        avgDamage = player.avgDamage ? (player.avgDamage * roundsPerGame) : 0;
+        avgRevives = player.avgRevives ? (player.avgRevives * roundsPerGame) : 0;
+        avgCaptures = player.avgCaptures ? (player.avgCaptures * roundsPerGame) : 0;
       } else {
-        player.winRate = 0;
-        player.avgDowns = 0;
-        player.avgDamage = 0;
-        player.avgRevives = 0;
-        player.avgCaptures = 0;
-        player.totalMVPs = 0;
-        player.favoriteOperator = '';
-        player.score = 0;
+        // Fallback
+        avgDowns = player.avgDowns || 0;
+        avgDamage = player.avgDamage || 0;
+        avgRevives = player.avgRevives || 0;
+        avgCaptures = player.avgCaptures || 0;
       }
+      
+      let score = 0;
+      switch(metric) {
+        case 'winrate':
+          score = player.winRate || 0;
+          break;
+        case 'downs':
+          score = Math.round(avgDowns * 10) / 10;
+          break;
+        case 'damage':
+          score = Math.round(avgDamage * 10) / 10;
+          break;
+        case 'revives':
+          score = Math.round(avgRevives * 10) / 10;
+          break;
+        case 'captures':
+          score = Math.round(avgCaptures * 10) / 10;
+          break;
+      }
+      
+      return {
+        name: player.name,
+        totalGames: player.totalGames || 0,
+        winRate: player.winRate || 0,
+        avgDowns: Math.round(avgDowns * 10) / 10,
+        avgDamage: Math.round(avgDamage * 10) / 10,
+        avgRevives: Math.round(avgRevives * 10) / 10,
+        avgCaptures: Math.round(avgCaptures * 10) / 10,
+        totalMVPs: calculatePlayerMVPs(player.name),
+        favoriteOperator: player.favoriteOperator || '',
+        score: score
+      };
     });
-
-    // Filtrar por número mínimo de jogos e ordenar por score
-    return Object.values(playerStats)
+    
+    return playerStats
       .filter(player => player.totalGames >= minGames)
       .sort((a, b) => b.score - a.score);
   };
 
   // Calcular ranking geral dos jogadores
   const calculatePlayerRanking = () => {
-    const playerStats = {};
-    
-    // Inicializar estatísticas de cada jogador
-    players.forEach(player => {
-      playerStats[player.name] = {
-        name: player.name,
-        totalGames: 0,
-        totalWins: 0,
-        totalLosses: 0,
-        totalDowns: 0,
-        totalDamage: 0,
-        totalRevives: 0,
-        totalCaptures: 0,
-        operators: new Map()
-      };
-    });
-
-    // Processar todas as batalhas
-    battles.forEach(battle => {
-      const allPlayers = [...battle.team1, ...battle.team2];
-      const isTeam1Winner = battle.result === 'win';
-      
-      allPlayers.forEach(player => {
-        if (playerStats[player.name]) {
-          const isWinner = (battle.team1.includes(player) && isTeam1Winner) || 
-                          (battle.team2.includes(player) && !isTeam1Winner);
-          
-          playerStats[player.name].totalGames++;
-          playerStats[player.name].totalWins += isWinner ? 1 : 0;
-          playerStats[player.name].totalLosses += isWinner ? 0 : 1;
-          playerStats[player.name].totalDowns += player.downs || 0;
-          playerStats[player.name].totalDamage += player.damage || 0;
-          playerStats[player.name].totalRevives += player.revives || 0;
-          playerStats[player.name].totalCaptures += player.captures || 0;
-          
-          // Contar operadores
-          if (player.operator) {
-            const currentCount = playerStats[player.name].operators.get(player.operator) || 0;
-            playerStats[player.name].operators.set(player.operator, currentCount + 1);
-          }
-        }
-      });
-    });
-
-    // Calcular médias e score
-    Object.values(playerStats).forEach(player => {
-      if (player.totalGames > 0) {
-        player.winRate = Math.round((player.totalWins / player.totalGames) * 100);
-        player.avgDowns = Math.round((player.totalDowns / player.totalGames) * 10) / 10;
-        player.avgDamage = Math.round((player.totalDamage / player.totalGames) * 10) / 10;
-        player.avgRevives = Math.round((player.totalRevives / player.totalGames) * 10) / 10;
-        player.avgCaptures = Math.round((player.totalCaptures / player.totalGames) * 10) / 10;
-        player.totalMVPs = calculatePlayerMVPs(player.name);
-        
-        // Encontrar operador favorito
-        let favoriteOperator = '';
-        let maxUses = 0;
-        player.operators.forEach((count, operator) => {
-          if (count > maxUses) {
-            maxUses = count;
-            favoriteOperator = operator;
-          }
-        });
-        player.favoriteOperator = favoriteOperator;
+    // Se estiver em modo "por ronda", usar os dados do Firebase diretamente
+    if (viewMode === 'round') {
+      const playerStats = players.map(player => {
+        const playerData = {
+          name: player.name,
+          totalGames: player.totalGames || 0,
+          winRate: player.winRate || 0,
+          avgDowns: player.avgDowns || 0,
+          avgDamage: player.avgDamage || 0,
+          avgRevives: player.avgRevives || 0,
+          avgCaptures: player.avgCaptures || 0,
+          totalMVPs: calculatePlayerMVPs(player.name),
+          favoriteOperator: player.favoriteOperator || ''
+        };
         
         // Calcular score com os pesos definidos
-        // Win Rate (35%) + Downs (35%) + Damage (15%) + Revives (10%) + Captures (5%)
-        const winRateScore = (player.winRate / 100) * 35;
-        const downsScore = Math.min(player.avgDowns / 30, 1) * 35; // 30 downs = 100%
-        const damageScore = Math.min(player.avgDamage / 3000, 1) * 15; // 3000 damage = 100%
-        const revivesScore = Math.min(player.avgRevives / 10, 1) * 10; // 10 revives = 100%
-        const capturesScore = Math.min(player.avgCaptures / 5, 1) * 5; // 5 captures = 100%
+        const winRateScore = (playerData.winRate / 100) * 35;
+        const downsScore = Math.min(playerData.avgDowns / 30, 1) * 35; // 30 downs = 100%
+        const damageScore = Math.min(playerData.avgDamage / 3000, 1) * 15; // 3000 damage = 100%
+        const revivesScore = Math.min(playerData.avgRevives / 10, 1) * 10; // 10 revives = 100%
+        const capturesScore = Math.min(playerData.avgCaptures / 5, 1) * 5; // 5 captures = 100%
         
-        player.score = Math.round((winRateScore + downsScore + damageScore + revivesScore + capturesScore) * 100) / 100;
+        playerData.score = Math.round((winRateScore + downsScore + damageScore + revivesScore + capturesScore) * 100) / 100;
+        
+        return playerData;
+      });
+      
+      return playerStats
+        .filter(player => player.totalGames >= minGames)
+        .sort((a, b) => b.score - a.score);
+    }
+    
+    // Se estiver em modo "por jogo", calcular médias por jogo usando totalGames
+    const playerStats = players.map(player => {
+      // Calcular médias por jogo a partir das médias por ronda
+      // Se temos totalRounds e totalGames, podemos converter
+      const totalRounds = player.totalRounds || 0;
+      const totalGames = player.totalGames || 0;
+      
+      // Se não tem totalRounds, significa que ainda não foi recalculado
+      // Nesse caso, usar os valores por jogo diretamente
+      let avgDowns, avgDamage, avgRevives, avgCaptures;
+      
+      if (totalRounds > 0 && totalGames > 0) {
+        // Converter de média por ronda para média por jogo
+        // avgPorJogo = avgPorRonda * (totalRounds / totalGames)
+        const roundsPerGame = totalRounds / totalGames;
+        avgDowns = player.avgDowns ? (player.avgDowns * roundsPerGame) : 0;
+        avgDamage = player.avgDamage ? (player.avgDamage * roundsPerGame) : 0;
+        avgRevives = player.avgRevives ? (player.avgRevives * roundsPerGame) : 0;
+        avgCaptures = player.avgCaptures ? (player.avgCaptures * roundsPerGame) : 0;
       } else {
-        player.winRate = 0;
-        player.avgDowns = 0;
-        player.avgDamage = 0;
-        player.avgRevives = 0;
-        player.avgCaptures = 0;
-        player.totalMVPs = 0;
-        player.favoriteOperator = '';
-        player.score = 0;
+        // Fallback: usar os valores originais (se existirem)
+        avgDowns = player.avgDowns || 0;
+        avgDamage = player.avgDamage || 0;
+        avgRevives = player.avgRevives || 0;
+        avgCaptures = player.avgCaptures || 0;
       }
+      
+      const playerData = {
+        name: player.name,
+        totalGames: player.totalGames || 0,
+        winRate: player.winRate || 0,
+        avgDowns: Math.round(avgDowns * 10) / 10,
+        avgDamage: Math.round(avgDamage * 10) / 10,
+        avgRevives: Math.round(avgRevives * 10) / 10,
+        avgCaptures: Math.round(avgCaptures * 10) / 10,
+        totalMVPs: calculatePlayerMVPs(player.name),
+        favoriteOperator: player.favoriteOperator || ''
+      };
+      
+      // Calcular score com os pesos definidos
+      const winRateScore = (playerData.winRate / 100) * 35;
+      const downsScore = Math.min(playerData.avgDowns / 30, 1) * 35; // 30 downs = 100%
+      const damageScore = Math.min(playerData.avgDamage / 3000, 1) * 15; // 3000 damage = 100%
+      const revivesScore = Math.min(playerData.avgRevives / 10, 1) * 10; // 10 revives = 100%
+      const capturesScore = Math.min(playerData.avgCaptures / 5, 1) * 5; // 5 captures = 100%
+      
+      playerData.score = Math.round((winRateScore + downsScore + damageScore + revivesScore + capturesScore) * 100) / 100;
+      
+      return playerData;
     });
-
-    // Filtrar por número mínimo de jogos e ordenar por score
-    return Object.values(playerStats)
+    
+    return playerStats
       .filter(player => player.totalGames >= minGames)
       .sort((a, b) => b.score - a.score);
   };
@@ -380,6 +378,41 @@ const PlayerRanking = ({ onClose }) => {
                 <option value={20}>20+ jogos</option>
               </select>
             </div>
+            <div className="filter-group">
+              <label>Modo de visualização:</label>
+              <div style={{ display: 'flex', gap: '5px' }}>
+                <button
+                  className={`filter-select ${viewMode === 'round' ? 'active' : ''}`}
+                  onClick={() => setViewMode('round')}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    background: viewMode === 'round' ? '#4ade80' : '#fff',
+                    color: viewMode === 'round' ? '#fff' : '#333',
+                    cursor: 'pointer',
+                    fontWeight: viewMode === 'round' ? 600 : 400
+                  }}
+                >
+                  📊 Por Ronda
+                </button>
+                <button
+                  className={`filter-select ${viewMode === 'game' ? 'active' : ''}`}
+                  onClick={() => setViewMode('game')}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    background: viewMode === 'game' ? '#4ade80' : '#fff',
+                    color: viewMode === 'game' ? '#fff' : '#333',
+                    cursor: 'pointer',
+                    fontWeight: viewMode === 'game' ? 600 : 400
+                  }}
+                >
+                  🎮 Por Jogo
+                </button>
+              </div>
+            </div>
             <div className="ranking-info">
               <p>Mostrando {ranking.length} jogadores</p>
             </div>
@@ -449,10 +482,10 @@ const PlayerRanking = ({ onClose }) => {
                       <th>{activeTab === 'overall' ? 'Score' : activeTab === 'winrate' ? 'Win Rate' : activeTab === 'downs' ? 'Avg Downs' : activeTab === 'damage' ? 'Avg Damage' : activeTab === 'revives' ? 'Avg Revives' : 'Avg Captures'}</th>
                       <th>Win Rate</th>
                       <th>Jogos</th>
-                      <th>Avg Downs</th>
-                      <th>Avg Damage</th>
-                      <th>Avg Revives</th>
-                      <th>Avg Captures</th>
+                      <th>Avg Downs{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
+                      <th>Avg Damage{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
+                      <th>Avg Revives{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
+                      <th>Avg Captures{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
                       <th>MVPs</th>
                       <th>Operador Favorito</th>
                     </tr>

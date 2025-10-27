@@ -8,7 +8,11 @@ const TeamManagement = ({ onClose }) => {
   const [battles, setBattles] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('duplas'); // 'duplas' ou 'equipas'
+  const [activeTab, setActiveTab] = useState('duplas'); // 'duplas', 'equipas' ou 'fazer-equipas'
+  
+  // Estados para o criador de equipas
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [generatedTeams, setGeneratedTeams] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -177,6 +181,141 @@ const TeamManagement = ({ onClose }) => {
     return num ? `${num}%` : '0%';
   };
 
+  // Função para criar equipas balanceadas automaticamente
+  const generateBalancedTeams = (playerNames) => {
+    if (playerNames.length !== 8) {
+      alert('Por favor, seleciona exatamente 8 jogadores!');
+      return;
+    }
+
+    // Obter dados dos jogadores selecionados
+    const selectedPlayersData = players.filter(p => playerNames.includes(p.name));
+    
+    // Calcular max e min para os jogadores selecionados
+    const maxDowns = Math.max(...selectedPlayersData.map(p => p.avgDowns || 0));
+    const minDowns = Math.min(...selectedPlayersData.map(p => p.avgDowns || 0));
+    const maxDamage = Math.max(...selectedPlayersData.map(p => p.avgDamage || 0));
+    const minDamage = Math.min(...selectedPlayersData.map(p => p.avgDamage || 0));
+    const maxRevives = Math.max(...selectedPlayersData.map(p => p.avgRevives || 0));
+    const minRevives = Math.min(...selectedPlayersData.map(p => p.avgRevives || 0));
+    const maxCaptures = Math.max(...selectedPlayersData.map(p => p.avgCaptures || 0));
+    const minCaptures = Math.min(...selectedPlayersData.map(p => p.avgCaptures || 0));
+    
+    // Calcular range (diferença entre max e min)
+    const rangeDowns = maxDowns - minDowns || 1;
+    const rangeDamage = maxDamage - minDamage || 1;
+    const rangeRevives = maxRevives - minRevives || 1;
+    const rangeCaptures = maxCaptures - minCaptures || 1;
+    
+    // Calcular max e min para assists também
+    const maxAssists = Math.max(...selectedPlayersData.map(p => p.avgAssists || 0));
+    const minAssists = Math.min(...selectedPlayersData.map(p => p.avgAssists || 0));
+    const rangeAssists = maxAssists - minAssists || 1;
+    
+    // Calcular ranking de cada jogador com as percentagens especificadas
+    const playersWithRank = selectedPlayersData.map(player => {
+      // Normalizar com base no range dos jogadores selecionados
+      // Win Rate (10%) - já está em percentagem
+      const winRateScore = ((player.winRate || 0) / 100) * 10;
+      
+      // Downs (35%) - normalizar para o range dos jogadores selecionados
+      const normDowns = rangeDowns > 0 ? ((player.avgDowns || 0) - minDowns) / rangeDowns * 35 : 0;
+      
+      // Damage (30%) - normalizar para o range dos jogadores selecionados
+      const normDamage = rangeDamage > 0 ? ((player.avgDamage || 0) - minDamage) / rangeDamage * 30 : 0;
+      
+      // Revives (10%) - normalizar para o range dos jogadores selecionados
+      const normRevives = rangeRevives > 0 ? ((player.avgRevives || 0) - minRevives) / rangeRevives * 10 : 0;
+      
+      // Captures (10%) - normalizar para o range dos jogadores selecionados
+      const normCaptures = rangeCaptures > 0 ? ((player.avgCaptures || 0) - minCaptures) / rangeCaptures * 10 : 0;
+      
+      // Assists (5%) - normalizar para o range dos jogadores selecionados
+      const normAssists = rangeAssists > 0 ? ((player.avgAssists || 0) - minAssists) / rangeAssists * 5 : 0;
+      
+      const totalScore = winRateScore + normDowns + normDamage + normRevives + normCaptures + normAssists;
+      
+      return {
+        ...player,
+        rank: totalScore
+      };
+    });
+
+    // Ordenar por ranking (do mais forte ao mais fraco)
+    const sortedPlayers = [...playersWithRank].sort((a, b) => b.rank - a.rank);
+
+    // Algoritmo melhorado: distribuir para equilibrar a força total
+    // A estratégia: 1º vai Team 1, 2º vai Team 2, 3º vai Team 2, 4º vai Team 1
+    // Depois distribuir os restantes para equilibrar
+    const team1 = [];
+    const team2 = [];
+
+    // Distribuir os 4 primeiros de forma balanceada
+    // Posição 1 → Team 1 (mais forte)
+    // Posição 2 → Team 2
+    // Posição 3 → Team 2
+    // Posição 4 → Team 1
+    team1.push(sortedPlayers[0]); // Mais forte
+    team2.push(sortedPlayers[1]);
+    team2.push(sortedPlayers[2]);
+    team1.push(sortedPlayers[3]);
+
+    // Agora distribuir os 4 restantes
+    // Posição 5 → Team 1
+    // Posição 6 → Team 2
+    // Posição 7 → Team 2
+    // Posição 8 → Team 1
+    team1.push(sortedPlayers[4]);
+    team2.push(sortedPlayers[5]);
+    team2.push(sortedPlayers[6]);
+    team1.push(sortedPlayers[7]);
+
+    // Calcular força total de cada equipa
+    const team1Strength = team1.reduce((sum, p) => sum + p.rank, 0);
+    const team2Strength = team2.reduce((sum, p) => sum + p.rank, 0);
+
+    return {
+      team1,
+      team2,
+      team1Strength: team1Strength.toFixed(2),
+      team2Strength: team2Strength.toFixed(2),
+      difference: Math.abs(team1Strength - team2Strength).toFixed(2)
+    };
+  };
+
+  // Função para selecionar/desselecionar jogador
+  const togglePlayerSelection = (playerName) => {
+    if (selectedPlayers.includes(playerName)) {
+      setSelectedPlayers(selectedPlayers.filter(name => name !== playerName));
+      setGeneratedTeams(null); // Reset teams when selection changes
+    } else {
+      if (selectedPlayers.length < 8) {
+        setSelectedPlayers([...selectedPlayers, playerName]);
+        setGeneratedTeams(null); // Reset teams when selection changes
+      } else {
+        alert('Só podes selecionar 8 jogadores!');
+      }
+    }
+  };
+
+  // Função para gerar as equipas
+  const handleGenerateTeams = () => {
+    if (selectedPlayers.length !== 8) {
+      alert('Por favor, seleciona exatamente 8 jogadores!');
+      return;
+    }
+
+    const teams = generateBalancedTeams(selectedPlayers);
+    setGeneratedTeams(teams);
+  };
+
+  // Função para resetar seleção
+  const handleResetSelection = () => {
+    setSelectedPlayers([]);
+    setGeneratedTeams(null);
+  };
+
+
   if (loading) {
     return (
       <div className="team-management-overlay">
@@ -213,10 +352,16 @@ const TeamManagement = ({ onClose }) => {
             >
               🏆 Equipas
             </button>
+            <button 
+              className={`tab ${activeTab === 'fazer-equipas' ? 'active' : ''}`}
+              onClick={() => setActiveTab('fazer-equipas')}
+            >
+              ⚖️ Fazer Equipas
+            </button>
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'duplas' ? (
+          {activeTab === 'duplas' && (
             <div className="duos-stats">
               <h3>Análise de Duplas</h3>
               
@@ -311,7 +456,9 @@ const TeamManagement = ({ onClose }) => {
                 </div>
               )}
             </div>
-          ) : (
+          )}
+
+          {activeTab === 'equipas' && (
             <div className="teams-stats">
               <h3>Análise de Equipas</h3>
               
@@ -351,7 +498,7 @@ const TeamManagement = ({ onClose }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {teamStats.map((team, index) => (
+                        {teamStats.map((team) => (
                           <tr key={team.players}>
                             <td className="team-players">{team.players}</td>
                             <td>{team.totalGames}</td>
@@ -366,6 +513,151 @@ const TeamManagement = ({ onClose }) => {
                     </table>
                   </div>
                 </>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'fazer-equipas' && (
+            <div className="team-maker">
+              <h3>⚖️ Criar Equipas</h3>
+              
+              <div className="score-explanation">
+                <h3>📊 Como é Calculado o Ranking</h3>
+                <div className="score-breakdown">
+                  <div className="score-item">
+                    <span className="score-label">Win Rate:</span>
+                    <span className="score-percentage">10%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Avg Downs:</span>
+                    <span className="score-percentage">35%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Avg Damage:</span>
+                    <span className="score-percentage">30%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Avg Revives:</span>
+                    <span className="score-percentage">10%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Avg Captures:</span>
+                    <span className="score-percentage">10%</span>
+                  </div>
+                  <div className="score-item">
+                    <span className="score-label">Avg Assists:</span>
+                    <span className="score-percentage">5%</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="maker-instructions">
+                <p>Seleciona 8 jogadores que vão jogar!</p>
+                <div className="selection-counter">
+                  <span className={`counter ${selectedPlayers.length === 8 ? 'complete' : ''}`}>
+                    {selectedPlayers.length}/8 Jogadores selecionados
+                  </span>
+                </div>
+              </div>
+
+              {/* Lista de jogadores para selecionar */}
+              <div className="player-selection-grid">
+                {players.length === 0 ? (
+                  <p className="no-players">Nenhum jogador encontrado.</p>
+                ) : (
+                  players.map((player) => {
+                    const isSelected = selectedPlayers.includes(player.name);
+                    return (
+                      <button
+                        key={player.name}
+                        className={`player-select-card ${isSelected ? 'selected' : ''}`}
+                        onClick={() => togglePlayerSelection(player.name)}
+                      >
+                        <div className="select-indicator">{isSelected ? '✓' : ''}</div>
+                        <div className="player-name">{player.name}</div>
+                        <div className="player-stats-mini">
+                          <span className="winrate">{formatPercentage(player.winRate)}</span>
+                          <span className="games">{player.totalGames} jogos</span>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Botões de ação */}
+              <div className="maker-actions">
+                <button 
+                  className="generate-btn"
+                  onClick={handleGenerateTeams}
+                  disabled={selectedPlayers.length !== 8}
+                >
+                  ⚖️ Criar Equipa
+                </button>
+                {selectedPlayers.length > 0 && (
+                  <button 
+                    className="reset-btn"
+                    onClick={handleResetSelection}
+                  >
+                    🔄 Reset Seleção
+                  </button>
+                )}
+              </div>
+
+              {/* Mostrar equipas geradas */}
+              {generatedTeams && (
+                <div className="generated-teams">
+                  <h4>✨ Equipas</h4>
+                  
+                  <div className="balance-info">
+                    <span>Diferença de Força: {generatedTeams.difference}</span>
+                    <span className={`balance-status ${parseFloat(generatedTeams.difference) < 5 ? 'balanced' : 'unbalanced'}`}>
+                      {parseFloat(generatedTeams.difference) < 5 ? '✓ Equilibrado' : '⚠ Desequilibrado'}
+                    </span>
+                  </div>
+
+                  <div className="teams-display">
+                    {/* Team 1 */}
+                    <div className="generated-team team-1">
+                      <div className="team-header">
+                        <h5>🟥 Equipa 1</h5>
+                        <span className="team-strength">Força: {generatedTeams.team1Strength}</span>
+                      </div>
+                      <div className="team-players-list">
+                        {generatedTeams.team1.map((player, index) => (
+                          <div key={player.name} className="team-player">
+                            <span className="player-position">#{index + 1}</span>
+                            <span className="player-name">{player.name}</span>
+                            <div className="player-mini-stats">
+                              <span>WR: {formatPercentage(player.winRate)}</span>
+                              <span>Avg Downs: {player.avgDowns}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Team 2 */}
+                    <div className="generated-team team-2">
+                      <div className="team-header">
+                        <h5>🟦 Equipa 2</h5>
+                        <span className="team-strength">Força: {generatedTeams.team2Strength}</span>
+                      </div>
+                      <div className="team-players-list">
+                        {generatedTeams.team2.map((player, index) => (
+                          <div key={player.name} className="team-player">
+                            <span className="player-position">#{index + 1}</span>
+                            <span className="player-name">{player.name}</span>
+                            <div className="player-mini-stats">
+                              <span>WR: {formatPercentage(player.winRate)}</span>
+                              <span>Avg Downs: {player.avgDowns}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           )}

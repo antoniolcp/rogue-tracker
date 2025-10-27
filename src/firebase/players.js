@@ -18,6 +18,7 @@ const createPlayerStats = (name) => ({
   isActive: true,
   // Estatísticas gerais
   totalGames: 0,
+  totalRounds: 0,  // Total de rondas jogadas
   totalWins: 0,
   totalLosses: 0,
   winRate: 0,
@@ -118,7 +119,7 @@ export const subscribeToPlayers = (callback) => {
 };
 
 // Atualizar estatísticas de um jogador após uma partida
-export const updatePlayerStats = async (playerName, gameStats, isWinner, operator = '') => {
+export const updatePlayerStats = async (playerName, gameStats, isWinner, operator = '', roundsPlayed = 0) => {
   try {
     const playerRef = doc(db, PLAYERS_COLLECTION, playerName);
     
@@ -128,6 +129,7 @@ export const updatePlayerStats = async (playerName, gameStats, isWinner, operato
     
     // Calcular novos totais
     const newTotalGames = currentData.totalGames + 1;
+    const newTotalRounds = (currentData.totalRounds || 0) + roundsPlayed;
     const newTotalWins = currentData.totalWins + (isWinner ? 1 : 0);
     const newTotalLosses = currentData.totalLosses + (isWinner ? 0 : 1);
     const newWinRate = newTotalGames > 0 ? (newTotalWins / newTotalGames) * 100 : 0;
@@ -135,6 +137,7 @@ export const updatePlayerStats = async (playerName, gameStats, isWinner, operato
     // Atualizar estatísticas de combate
     const updateData = {
       totalGames: newTotalGames,
+      totalRounds: newTotalRounds,  // Guardar total de rondas
       totalWins: newTotalWins,
       totalLosses: newTotalLosses,
       winRate: Math.round(newWinRate * 100) / 100,
@@ -147,13 +150,13 @@ export const updatePlayerStats = async (playerName, gameStats, isWinner, operato
       totalDamage: currentData.totalDamage + (gameStats.damage || 0),
       totalCaptures: currentData.totalCaptures + (gameStats.captures || 0),
       
-      // Calcular médias
-      avgElims: Math.round(((currentData.totalElims + (gameStats.elims || 0)) / newTotalGames) * 10) / 10,
-      avgDowns: Math.round(((currentData.totalDowns + (gameStats.downs || 0)) / newTotalGames) * 10) / 10,
-      avgAssists: Math.round(((currentData.totalAssists + (gameStats.assists || 0)) / newTotalGames) * 10) / 10,
-      avgRevives: Math.round(((currentData.totalRevives + (gameStats.revives || 0)) / newTotalGames) * 10) / 10,
-      avgDamage: Math.round(((currentData.totalDamage + (gameStats.damage || 0)) / newTotalGames) * 10) / 10,
-      avgCaptures: Math.round(((currentData.totalCaptures + (gameStats.captures || 0)) / newTotalGames) * 10) / 10,
+      // Calcular médias POR RONDA em vez de por jogo
+      avgElims: Math.round(((currentData.totalElims + (gameStats.elims || 0)) / newTotalRounds) * 10) / 10,
+      avgDowns: Math.round(((currentData.totalDowns + (gameStats.downs || 0)) / newTotalRounds) * 10) / 10,
+      avgAssists: Math.round(((currentData.totalAssists + (gameStats.assists || 0)) / newTotalRounds) * 10) / 10,
+      avgRevives: Math.round(((currentData.totalRevives + (gameStats.revives || 0)) / newTotalRounds) * 10) / 10,
+      avgDamage: Math.round(((currentData.totalDamage + (gameStats.damage || 0)) / newTotalRounds) * 10) / 10,
+      avgCaptures: Math.round(((currentData.totalCaptures + (gameStats.captures || 0)) / newTotalRounds) * 10) / 10,
       
         // Atualizar melhores performances
         bestElims: Math.max(currentData.bestElims, gameStats.elims || 0),
@@ -180,10 +183,11 @@ export const updatePlayerStats = async (playerName, gameStats, isWinner, operato
 // Processar uma batalha completa e atualizar todos os jogadores
 export const processBattleResults = async (battleData) => {
   try {
-    const { team1, team2, result } = battleData;
+    const { team1, team2, result, team1Rounds, team2Rounds } = battleData;
     const isTeam1Winner = result === 'win';
+    const roundsPlayed = (team1Rounds || 0) + (team2Rounds || 0);
     
-    console.log('🔍 Processando batalha:', { team1: team1.map(p => p.name), team2: team2.map(p => p.name), result });
+    console.log('🔍 Processando batalha:', { team1: team1.map(p => p.name), team2: team2.map(p => p.name), result, roundsPlayed });
     
     // Processar Team 1
     for (const player of team1) {
@@ -200,7 +204,7 @@ export const processBattleResults = async (battleData) => {
               revives: player.revives || 0,
               damage: player.damage || 0,
               captures: player.captures || 0
-            }, isTeam1Winner, player.operator || '');
+            }, isTeam1Winner, player.operator || '', roundsPlayed);
         console.log(`📊 Estatísticas atualizadas para ${player.name}`);
       } else {
         console.log(`❌ Jogador não encontrado, criando novo: ${player.name}`);
@@ -213,7 +217,7 @@ export const processBattleResults = async (battleData) => {
           revives: player.revives || 0,
           damage: player.damage || 0,
           captures: player.captures || 0
-        }, isTeam1Winner, player.operator || '');
+        }, isTeam1Winner, player.operator || '', roundsPlayed);
         console.log(`🆕 Novo jogador criado: ${player.name}`);
       }
     }
@@ -233,7 +237,7 @@ export const processBattleResults = async (battleData) => {
           revives: player.revives || 0,
           damage: player.damage || 0,
           captures: player.captures || 0
-        }, !isTeam1Winner, player.operator || '');
+        }, !isTeam1Winner, player.operator || '', roundsPlayed);
         console.log(`📊 Estatísticas atualizadas para ${player.name}`);
       } else {
         console.log(`❌ Jogador não encontrado, criando novo: ${player.name}`);
@@ -246,7 +250,7 @@ export const processBattleResults = async (battleData) => {
           revives: player.revives || 0,
           damage: player.damage || 0,
           captures: player.captures || 0
-        }, !isTeam1Winner, player.operator || '');
+        }, !isTeam1Winner, player.operator || '', roundsPlayed);
         console.log(`🆕 Novo jogador criado: ${player.name}`);
       }
     }
