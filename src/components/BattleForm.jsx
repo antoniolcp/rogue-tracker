@@ -139,24 +139,24 @@ const BattleForm = ({ onClose }) => {
 
   const processImportData = () => {
     console.log('🚀 Botão clicado! A processar dados da partida real...');
-    // Dados reais do POST MATCH REPORT - Team 3 vs Team 1 (DEFEAT para Team 3)
+    // Dados reais do POST MATCH REPORT - Team 1 vs Team 3 (VICTORY para Team 1)
     const baseTime = Date.now();
     const sampleData = {
       map: 'Unknown', // Mapa não especificado no relatório
       team1: [
-        { id: `player_${baseTime}_1`, name: 'Gametti', operator: 'Unknown', elims: 34, downs: 27, assists: 7, revives: 3, damage: 4470, captures: 8 },
-        { id: `player_${baseTime + 1}_2`, name: 'fifagomesg-19', operator: 'Unknown', elims: 33, downs: 16, assists: 20, revives: 1, damage: 3484, captures: 2 },
-        { id: `player_${baseTime + 2}_3`, name: 'tiagofranca6', operator: 'Unknown', elims: 28, downs: 16, assists: 8, revives: 0, damage: 3481, captures: 5 },
-        { id: `player_${baseTime + 3}_4`, name: 'Benny_Fuego', operator: 'Unknown', elims: 24, downs: 9, assists: 10, revives: 3, damage: 2845, captures: 9 }
+        { id: `player_${baseTime}_1`, name: 'Gametti', operator: 'Unknown', elims: 32, downs: 24, assists: 7, revives: 2, damage: 4157, captures: 7 },
+        { id: `player_${baseTime + 1}_2`, name: 'BARROSA10', operator: 'Unknown', elims: 21, downs: 14, assists: 8, revives: 0, damage: 2961, captures: 4 },
+        { id: `player_${baseTime + 2}_3`, name: 'Duarte_Sogalho', operator: 'Unknown', elims: 15, downs: 12, assists: 4, revives: 4, damage: 1861, captures: 5 },
+        { id: `player_${baseTime + 3}_4`, name: 'fifagomesg-19', operator: 'Unknown', elims: 10, downs: 5, assists: 9, revives: 0, damage: 2216, captures: 2 }
       ],
       team2: [
-        { id: `player_${baseTime + 4}_5`, name: 'wrrqvy', operator: 'Unknown', elims: 32, downs: 21, assists: 11, revives: 2, damage: 3664, captures: 1 },
-        { id: `player_${baseTime + 5}_6`, name: 'BARROSA10', operator: 'Unknown', elims: 29, downs: 17, assists: 5, revives: 2, damage: 3820, captures: 9 },
-        { id: `player_${baseTime + 6}_7`, name: 'franciscomrfe', operator: 'Unknown', elims: 26, downs: 23, assists: 7, revives: 0, damage: 4393, captures: 5 },
-        { id: `player_${baseTime + 7}_8`, name: 'Duarte_Sogalho', operator: 'Unknown', elims: 14, downs: 6, assists: 5, revives: 3, damage: 1398, captures: 4 }
+        { id: `player_${baseTime + 4}_5`, name: 'Andre_santinho', operator: 'Unknown', elims: 31, downs: 25, assists: 7, revives: 2, damage: 3855, captures: 6 },
+        { id: `player_${baseTime + 5}_6`, name: 'antoniolamycp9', operator: 'Unknown', elims: 27, downs: 16, assists: 10, revives: 2, damage: 3169, captures: 3 },
+        { id: `player_${baseTime + 6}_7`, name: 'franciscomrfe', operator: 'Unknown', elims: 25, downs: 14, assists: 11, revives: 1, damage: 3260, captures: 3 },
+        { id: `player_${baseTime + 7}_8`, name: 'tiagofranca6', operator: 'Unknown', elims: 20, downs: 13, assists: 5, revives: 1, damage: 2784, captures: 4 }
       ],
-      team1Rounds: 0, // Team 3 (perdedora) - DEFEAT
-      team2Rounds: 3  // Team 1 (vencedora) - VICTORY
+      team1Rounds: 3, // Team 1 (vencedora) - VICTORY
+      team2Rounds: 0  // Team 3 (perdedora) - DEFEAT
     };
 
     console.log('📥 Carregando dados de exemplo com IDs únicos:');
@@ -245,31 +245,32 @@ const BattleForm = ({ onClose }) => {
               <p>Envia-me uma imagem do scoreboard e eu preencho automaticamente!</p>
               
               <div className="sample-data">
-                <h4>Dados da partida real (POST MATCH REPORT - Team 3 vs Team 1):</h4>
+                <h4>Dados da partida real (POST MATCH REPORT - Team 1 vs Team 3):</h4>
                 <div className="sample-teams">
-                  <div className="sample-team">
-                    <strong>Team 3 (Perdedora - DEFEAT):</strong>
-                    <ul>
-                      <li><strong>Gametti</strong>: 34 elims, 27 downs, 7 assists, 3 revives, 4470 damage, 8 captures</li>
-                      <li>fifagomesg-19: 33 elims, 16 downs, 20 assists, 1 revive, 3484 damage, 2 captures</li>
-                      <li>tiagofranca6: 28 elims, 16 downs, 8 assists, 0 revives, 3481 damage, 5 captures</li>
-                      <li>Benny_Fuego: 24 elims, 9 downs, 10 assists, 3 revives, 2845 damage, 9 captures</li>
-                    </ul>
-                  </div>
                   <div className="sample-team">
                     <strong>Team 1 (Vencedora - VICTORY):</strong>
                     <ul>
-                      <li>wrrqvy: 32 elims, 21 downs, 11 assists, 2 revives, 3664 damage, 1 capture</li>
-                      <li>BARROSA10: 29 elims, 17 downs, 5 assists, 2 revives, 3820 damage, 9 captures</li>
-                      <li>franciscomrfe: 26 elims, 23 downs, 7 assists, 0 revives, 4393 damage, 5 captures</li>
-                      <li>Duarte_Sogalho: 14 elims, 6 downs, 5 assists, 3 revives, 1398 damage, 4 captures</li>
+                      <li><strong>Gametti</strong>: 32 elims, 24 downs, 7 assists, 2 revives, 4157 damage, 7 captures</li>
+                      <li>BARROSA10: 21 elims, 14 downs, 8 assists, 0 revives, 2961 damage, 4 captures</li>
+                      <li>Duarte_Sogalho: 15 elims, 12 downs, 4 assists, 4 revives, 1861 damage, 5 captures</li>
+                      <li>fifagomesg-19: 10 elims, 5 downs, 9 assists, 0 revives, 2216 damage, 2 captures</li>
+                    </ul>
+                  </div>
+                  <div className="sample-team">
+                    <strong>Team 3 (Perdedora - DEFEAT):</strong>
+                    <ul>
+                      <li>Andre_santinho: 31 elims, 25 downs, 7 assists, 2 revives, 3855 damage, 6 captures</li>
+                      <li>antoniolamycp9: 27 elims, 16 downs, 10 assists, 2 revives, 3169 damage, 3 captures</li>
+                      <li>franciscomrfe: 25 elims, 14 downs, 11 assists, 1 revive, 3260 damage, 3 captures</li>
+                      <li>tiagofranca6: 20 elims, 13 downs, 5 assists, 1 revive, 2784 damage, 4 captures</li>
                     </ul>
                   </div>
                 </div>
                 <div className="match-info">
-                  <p><strong>Match ID:</strong> 6154c698-fc4f-4ec7-8c4c-5414-</p>
-                  <p><strong>Match Result:</strong> DEFEAT</p>
-                  <p><strong>Resultado:</strong> Team 3 DEFEAT</p>
+                  <p><strong>Match ID:</strong> d29fef15-0f02-485c-be53-eec3845af267</p>
+                  <p><strong>Time Played:</strong> 19:35</p>
+                  <p><strong>Match Result:</strong> VICTORY</p>
+                  <p><strong>Resultado:</strong> Team 1 VICTORY</p>
                 </div>
               </div>
 
@@ -279,10 +280,10 @@ const BattleForm = ({ onClose }) => {
                   className="import-sample-btn"
                   onClick={processImportData}
                 >
-                  🎮 Usar Dados do POST MATCH REPORT (Team 3 DEFEAT)
+                  🎮 Usar Dados do POST MATCH REPORT (Team 1 VICTORY)
                 </button>
                 <p className="import-note">
-                  <em>Dados extraídos do POST MATCH REPORT (Team 3 DEFEAT)</em>
+                  <em>Dados extraídos do POST MATCH REPORT (Team 1 VICTORY)</em>
                 </p>
               </div>
             </div>
