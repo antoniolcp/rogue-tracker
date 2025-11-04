@@ -8,6 +8,7 @@ import MapAnalysis from './components/MapAnalysis'
 import PlayerRanking from './components/PlayerRanking'
 import PlayerComparison from './components/PlayerComparison'
 import GameList from './components/GameList'
+import BestPerformance from './components/BestPerformance'
 
 function App() {
   const [showBattleForm, setShowBattleForm] = useState(false)
@@ -18,6 +19,7 @@ function App() {
   const [showPlayerRanking, setShowPlayerRanking] = useState(false)
   const [showPlayerComparison, setShowPlayerComparison] = useState(false)
   const [showGameList, setShowGameList] = useState(false)
+  const [showBestPerformance, setShowBestPerformance] = useState(false)
 
 
   const handleAddBattle = () => {
@@ -83,6 +85,14 @@ function App() {
 
   const handleCloseGameList = () => {
     setShowGameList(false)
+  }
+
+  const handleShowBestPerformance = () => {
+    setShowBestPerformance(true)
+  }
+
+  const handleCloseBestPerformance = () => {
+    setShowBestPerformance(false)
   }
 
 
@@ -167,6 +177,10 @@ function App() {
               <div className="feature-icon">📋</div>
               <h3>Lista de Jogos</h3>
             </div>
+            <div className="feature-card clickable" onClick={handleShowBestPerformance}>
+              <div className="feature-icon">🏅</div>
+              <h3>Melhor Performance</h3>
+            </div>
           </div>
         </section>
       </main>
@@ -221,6 +235,12 @@ function App() {
       {showGameList && (
         <GameList 
           onClose={handleCloseGameList}
+        />
+      )}
+
+      {showBestPerformance && (
+        <BestPerformance 
+          onClose={handleCloseBestPerformance}
         />
       )}
     </div>
