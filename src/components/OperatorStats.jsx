@@ -333,7 +333,6 @@ const OperatorStats = ({ onClose }) => {
               
               {!selectedPlayer ? (
                 <div className="player-selection">
-                  <h4>Escolhe um jogador:</h4>
                   <div className="players-grid">
                     {players.length === 0 ? (
                       <p className="no-players">Nenhum jogador encontrado.</p>
