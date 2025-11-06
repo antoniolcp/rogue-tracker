@@ -100,6 +100,17 @@
   background: rgba(0, 212, 255, 0.1);
 }
 
+.records-table tbody tr.clickable-row {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.records-table tbody tr.clickable-row:hover {
+  background: rgba(0, 212, 255, 0.2);
+  transform: translateX(5px);
+  box-shadow: -3px 0 10px rgba(0, 212, 255, 0.3);
+}
+
 .records-table tbody tr:last-child {
   border-bottom: none;
 }

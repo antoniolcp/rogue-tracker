@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { subscribeToBattles } from '../firebase/battles';
 import './GameList.css';
 
-const GameList = ({ onClose }) => {
+const GameList = ({ onClose, initialBattleId = null }) => {
   const [battles, setBattles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedGame, setSelectedGame] = useState(null);
@@ -16,6 +16,54 @@ const GameList = ({ onClose }) => {
 
     return () => unsubscribe();
   }, []);
+
+  // Selecionar automaticamente o jogo inicial se fornecido
+  useEffect(() => {
+    if (initialBattleId && battles.length > 0 && !selectedGame) {
+      // Agrupar batalhas por data (mesma lógica de groupBattlesByDate)
+      const groupedBattles = {};
+      
+      battles.forEach(battle => {
+        const date = new Date(battle.createdAt?.toDate ? battle.createdAt.toDate() : battle.createdAt);
+        const dateKey = date.toLocaleDateString('pt-PT', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long'
+        });
+        
+        if (!groupedBattles[dateKey]) {
+          groupedBattles[dateKey] = [];
+        }
+        groupedBattles[dateKey].push(battle);
+      });
+
+      // Ordenar por data (mais recente primeiro)
+      const sortedGroups = Object.entries(groupedBattles)
+        .sort(([a], [b]) => {
+          const dateA = new Date(a.split(', ')[1] + ' ' + a.split(', ')[0]);
+          const dateB = new Date(b.split(', ')[1] + ' ' + b.split(', ')[0]);
+          return dateB - dateA;
+        });
+
+      // Criar lista de todos os jogos com data
+      const allGamesWithDate = [];
+      sortedGroups.forEach(([dateKey, dayBattles]) => {
+        dayBattles.forEach((b, index) => {
+          allGamesWithDate.push({
+            ...b,
+            dateKey,
+            gameNumber: index + 1
+          });
+        });
+      });
+      
+      const gameWithDate = allGamesWithDate.find(g => g.id === initialBattleId);
+      if (gameWithDate) {
+        setSelectedGame(gameWithDate);
+      }
+    }
+  }, [initialBattleId, battles, selectedGame]);
 
 
   // Agrupar batalhas por data

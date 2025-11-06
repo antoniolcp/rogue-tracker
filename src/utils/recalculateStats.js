@@ -21,6 +21,9 @@ export const recalculateAllPlayerStats = async () => {
     // Criar um mapa para acumular estatísticas
     const playerStats = {};
     
+    // Criar um mapa para contar uso de operadores por jogador
+    const playerOperators = {};
+    
     // Inicializar todos os jogadores
     players.forEach(player => {
       playerStats[player.name] = {
@@ -42,6 +45,7 @@ export const recalculateAllPlayerStats = async () => {
         bestCaptures: 0,
         lastOperator: player.lastOperator || ''
       };
+      playerOperators[player.name] = {};
     });
     
     // Processar cada batalha
@@ -53,6 +57,30 @@ export const recalculateAllPlayerStats = async () => {
       // Processar Team 1
       if (team1 && Array.isArray(team1)) {
         team1.forEach(player => {
+          // Inicializar jogador se não existir
+          if (!playerStats[player.name]) {
+            playerStats[player.name] = {
+              totalGames: 0,
+              totalRounds: 0,
+              totalWins: 0,
+              totalLosses: 0,
+              totalElims: 0,
+              totalDowns: 0,
+              totalAssists: 0,
+              totalRevives: 0,
+              totalDamage: 0,
+              totalCaptures: 0,
+              bestElims: 0,
+              bestDowns: 0,
+              bestAssists: 0,
+              bestRevives: 0,
+              bestDamage: 0,
+              bestCaptures: 0,
+              lastOperator: ''
+            };
+            playerOperators[player.name] = {};
+          }
+          
           if (playerStats[player.name]) {
             playerStats[player.name].totalGames++;
             playerStats[player.name].totalRounds += roundsPlayed;
@@ -72,6 +100,14 @@ export const recalculateAllPlayerStats = async () => {
             playerStats[player.name].bestRevives = Math.max(playerStats[player.name].bestRevives, player.revives || 0);
             playerStats[player.name].bestDamage = Math.max(playerStats[player.name].bestDamage, player.damage || 0);
             playerStats[player.name].bestCaptures = Math.max(playerStats[player.name].bestCaptures, player.captures || 0);
+            
+            // Contar uso de operador
+            if (player.operator && player.operator.trim() !== '' && player.operator !== 'Unknown') {
+              if (!playerOperators[player.name][player.operator]) {
+                playerOperators[player.name][player.operator] = 0;
+              }
+              playerOperators[player.name][player.operator]++;
+            }
           }
         });
       }
@@ -79,6 +115,30 @@ export const recalculateAllPlayerStats = async () => {
       // Processar Team 2
       if (team2 && Array.isArray(team2)) {
         team2.forEach(player => {
+          // Inicializar jogador se não existir
+          if (!playerStats[player.name]) {
+            playerStats[player.name] = {
+              totalGames: 0,
+              totalRounds: 0,
+              totalWins: 0,
+              totalLosses: 0,
+              totalElims: 0,
+              totalDowns: 0,
+              totalAssists: 0,
+              totalRevives: 0,
+              totalDamage: 0,
+              totalCaptures: 0,
+              bestElims: 0,
+              bestDowns: 0,
+              bestAssists: 0,
+              bestRevives: 0,
+              bestDamage: 0,
+              bestCaptures: 0,
+              lastOperator: ''
+            };
+            playerOperators[player.name] = {};
+          }
+          
           if (playerStats[player.name]) {
             playerStats[player.name].totalGames++;
             playerStats[player.name].totalRounds += roundsPlayed;
@@ -98,10 +158,34 @@ export const recalculateAllPlayerStats = async () => {
             playerStats[player.name].bestRevives = Math.max(playerStats[player.name].bestRevives, player.revives || 0);
             playerStats[player.name].bestDamage = Math.max(playerStats[player.name].bestDamage, player.damage || 0);
             playerStats[player.name].bestCaptures = Math.max(playerStats[player.name].bestCaptures, player.captures || 0);
+            
+            // Contar uso de operador
+            if (player.operator && player.operator.trim() !== '' && player.operator !== 'Unknown') {
+              if (!playerOperators[player.name][player.operator]) {
+                playerOperators[player.name][player.operator] = 0;
+              }
+              playerOperators[player.name][player.operator]++;
+            }
           }
         });
       }
     });
+    
+    // Calcular operador favorito para cada jogador
+    const favoriteOperators = {};
+    for (const [playerName, operators] of Object.entries(playerOperators)) {
+      let maxUses = 0;
+      let favoriteOperator = '';
+      
+      for (const [operator, count] of Object.entries(operators)) {
+        if (count > maxUses) {
+          maxUses = count;
+          favoriteOperator = operator;
+        }
+      }
+      
+      favoriteOperators[playerName] = favoriteOperator;
+    }
     
     // Atualizar todos os jogadores com as estatísticas recalculadas
     for (const [playerName, stats] of Object.entries(playerStats)) {
@@ -134,12 +218,13 @@ export const recalculateAllPlayerStats = async () => {
           bestDamage: stats.bestDamage,
           bestCaptures: stats.bestCaptures,
           lastOperator: stats.lastOperator,
+          favoriteOperator: favoriteOperators[playerName] || '',
           updatedAt: new Date()
         };
         
         const playerRef = doc(db, PLAYERS_COLLECTION, playerName);
         await updateDoc(playerRef, updateData);
-        console.log(`✅ Atualizado: ${playerName}`);
+        console.log(`✅ Atualizado: ${playerName} (Operador Favorito: ${favoriteOperators[playerName] || 'N/A'})`);
       }
     }
     

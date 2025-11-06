@@ -28,6 +28,14 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden; /* Prevenir scroll horizontal no mobile */
+}
+
+@media (max-width: 768px) {
+  body {
+    display: block; /* Mudar para block no mobile para melhor layout */
+    place-items: unset;
+  }
 }
 
 h1 {

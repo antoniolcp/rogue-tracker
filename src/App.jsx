@@ -20,6 +20,7 @@ function App() {
   const [showPlayerComparison, setShowPlayerComparison] = useState(false)
   const [showGameList, setShowGameList] = useState(false)
   const [showBestPerformance, setShowBestPerformance] = useState(false)
+  const [initialBattleId, setInitialBattleId] = useState(null)
 
 
   const handleAddBattle = () => {
@@ -79,12 +80,20 @@ function App() {
     setShowPlayerComparison(false)
   }
 
-  const handleShowGameList = () => {
+  const handleShowGameList = (battleId = null) => {
+    setInitialBattleId(battleId)
     setShowGameList(true)
   }
 
   const handleCloseGameList = () => {
     setShowGameList(false)
+    setInitialBattleId(null)
+  }
+
+  const handleNavigateToGame = (battleId) => {
+    // Fechar BestPerformance e abrir GameList com o jogo específico
+    setShowBestPerformance(false)
+    handleShowGameList(battleId)
   }
 
   const handleShowBestPerformance = () => {
@@ -235,12 +244,14 @@ function App() {
       {showGameList && (
         <GameList 
           onClose={handleCloseGameList}
+          initialBattleId={initialBattleId}
         />
       )}
 
       {showBestPerformance && (
         <BestPerformance 
           onClose={handleCloseBestPerformance}
+          onNavigateToGame={handleNavigateToGame}
         />
       )}
     </div>

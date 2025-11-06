@@ -38,6 +38,13 @@ body {
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .hero-section {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
 .gomes {
   position: absolute;
   top: 20px;
@@ -140,6 +147,23 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+@media (max-width: 768px) {
+  .hero-content {
+    padding: 1.5rem;
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding: 1rem;
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+    border-radius: 15px;
+  }
+}
+
 .hero-title {
   font-size: 4.5rem;
   font-weight: 900;
@@ -170,6 +194,14 @@ body {
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 }
 
 .btn-primary, .btn-secondary {
@@ -377,58 +409,30 @@ body {
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 2rem 1rem;
+    padding: 1rem;
     min-height: 100vh;
+    overflow-x: hidden;
   }
   
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
   }
   
   .hero-section::after {
-    width: 200px;
-    height: 150px;
-    bottom: 10px;
-    right: 10px;
+    display: none; /* Esconder a imagem do van no mobile para não causar problemas */
   }
   
-  /* Ajustar imagens para mobile */
-  .gomes, .top-left-logo-secondary, .top-right-logo {
-    width: 60px;
-  }
-  
+  /* Esconder ou reduzir significativamente as imagens decorativas no mobile */
+  .gomes, .top-left-logo-secondary, .top-right-logo,
   .ben, .gama, .top-left-logo-bottom {
-    width: 50px;
-  }
-  
-  .gomes {
-    top: 10px;
-    left: 10px;
-  }
-  
-  .top-left-logo-secondary {
-    top: 10px;
-    left: 80px;
-  }
-  
-  .top-right-logo {
-    top: 10px;
-    right: 10px;
-  }
-  
-  .top-left-logo-bottom {
-    top: 200px;
-    left: 10px;
-  }
-  
-  .ben {
-    top: 200px;
-    left: 70px;
-  }
-  
-  .gama {
-    top: 250px;
-    left: 10px;
+    display: none; /* Esconder todas as imagens decorativas no mobile */
   }
   
   .stats-grid {
@@ -445,58 +449,135 @@ body {
   .main-content {
     padding: 2rem 1rem;
   }
+  
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .hero-section {
+    padding: 0.5rem;
+  }
+  
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.1;
   }
   
-  /* Ajustar imagens para mobile pequeno */
-  .gomes, .top-left-logo-secondary, .top-right-logo {
-    width: 50px;
+  .hero-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
   }
   
+  .los-text {
+    display: block;
+    margin-left: 0;
+  }
+  
+  .chinelos-text {
+    margin-left: 0;
+    display: block;
+  }
+  
+  /* Garantir que todas as imagens decorativas estão escondidas */
+  .gomes, .top-left-logo-secondary, .top-right-logo,
   .ben, .gama, .top-left-logo-bottom {
-    width: 40px;
+    display: none !important;
   }
   
-  .gomes {
-    top: 5px;
-    left: 5px;
-  }
-  
-  .top-left-logo-secondary {
-    top: 5px;
-    left: 65px;
-  }
-  
-  .top-right-logo {
-    top: 5px;
-    right: 5px;
-  }
-  
-  .top-left-logo-bottom {
-    top: 150px;
-    left: 5px;
-  }
-  
-  .ben {
-    top: 150px;
-    left: 55px;
-  }
-  
-  .gama {
-    top: 200px;
-    left: 5px;
+  .hero-section::after {
+    display: none !important;
   }
   
   .btn-primary, .btn-secondary {
-    padding: 0.8rem 1.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .btn-large {
+    padding: 1rem 1.5rem;
     font-size: 1rem;
   }
   
   .stats-grid {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .feature-card {
     padding: 1.5rem;
+  }
+  
+  .feature-icon {
+    font-size: 2rem;
+  }
+  
+  .feature-card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .main-content {
+    padding: 1.5rem 0.5rem;
+  }
+}
+
+/* Media query para telas muito pequenas (400px) */
+@media (max-width: 400px) {
+  .hero-section {
+    padding: 0.25rem;
+  }
+  
+  .hero-content {
+    padding: 0.75rem;
+    margin: 0.25rem;
+    max-width: calc(100% - 0.5rem);
+    border-radius: 12px;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-large {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    max-width: 100%;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .feature-card {
+    padding: 1rem;
+  }
+  
+  .feature-icon {
+    font-size: 1.75rem;
+  }
+  
+  .feature-card h3 {
+    font-size: 1rem;
+  }
+  
+  .main-content {
+    padding: 1rem 0.25rem;
   }
 }

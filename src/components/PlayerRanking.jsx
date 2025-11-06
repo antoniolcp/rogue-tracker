@@ -69,7 +69,7 @@ const PlayerRanking = ({ onClose }) => {
           avgRevives: player.avgRevives || 0,
           avgCaptures: player.avgCaptures || 0,
           totalMVPs: calculatePlayerMVPs(player.name),
-          favoriteOperator: player.favoriteOperator || '',
+          favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name),
           score: avgValue
         };
       });
@@ -129,7 +129,7 @@ const PlayerRanking = ({ onClose }) => {
         avgRevives: Math.round(avgRevives * 10) / 10,
         avgCaptures: Math.round(avgCaptures * 10) / 10,
         totalMVPs: calculatePlayerMVPs(player.name),
-        favoriteOperator: player.favoriteOperator || '',
+        favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name),
         score: score
       };
     });
@@ -164,7 +164,7 @@ const PlayerRanking = ({ onClose }) => {
           avgRevives: player.avgRevives || 0,
           avgCaptures: player.avgCaptures || 0,
           totalMVPs: calculatePlayerMVPs(player.name),
-          favoriteOperator: player.favoriteOperator || ''
+          favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name)
         };
         
         // Calcular score: Win Rate usa 100% como referência, outras métricas usam o máximo real
@@ -218,7 +218,7 @@ const PlayerRanking = ({ onClose }) => {
         avgRevives,
         avgCaptures,
         totalMVPs: calculatePlayerMVPs(player.name),
-        favoriteOperator: player.favoriteOperator || ''
+        favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name)
       };
     });
     
@@ -324,6 +324,37 @@ const PlayerRanking = ({ onClose }) => {
       const mvp = calculateMVP(battle);
       return mvp && mvp.name === playerName;
     }).length;
+  };
+
+  // Calcular operador favorito de um jogador baseado nas batalhas
+  const calculateFavoriteOperator = (playerName) => {
+    if (!battles || battles.length === 0) {
+      return '';
+    }
+    
+    const operatorCounts = {};
+    
+    battles.forEach(battle => {
+      const allPlayers = [...(battle.team1 || []), ...(battle.team2 || [])];
+      const player = allPlayers.find(p => p.name === playerName);
+      
+      if (player && player.operator && player.operator.trim() !== '' && player.operator !== 'Unknown') {
+        operatorCounts[player.operator] = (operatorCounts[player.operator] || 0) + 1;
+      }
+    });
+    
+    // Encontrar o operador mais usado
+    let maxUses = 0;
+    let favoriteOperator = '';
+    
+    for (const [operator, count] of Object.entries(operatorCounts)) {
+      if (count > maxUses) {
+        maxUses = count;
+        favoriteOperator = operator;
+      }
+    }
+    
+    return favoriteOperator;
   };
 
   if (loading) {
@@ -492,7 +523,7 @@ const PlayerRanking = ({ onClose }) => {
                         <span className="games">{player.totalGames} jogos</span>
                       </div>
                       <div className="player-operator">
-                        {player.favoriteOperator || 'N/A'}
+                        {player.favoriteOperator || calculateFavoriteOperator(player.name) || '-'}
                       </div>
                     </div>
                   ))}
