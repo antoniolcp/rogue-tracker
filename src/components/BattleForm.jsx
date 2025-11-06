@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { addBattle } from '../firebase/battles';
-import { processBattleResults } from '../firebase/players';
+import { addBattle, getBattles } from '../firebase/battles';
+import { processBattleResults, getPlayers } from '../firebase/players';
 import './BattleForm.css';
 
 const BattleForm = ({ onClose }) => {
@@ -14,6 +14,61 @@ const BattleForm = ({ onClose }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showImportMode, setShowImportMode] = useState(false);
+  const [playerFavoriteOperators, setPlayerFavoriteOperators] = useState({});
+
+  // Carregar operadores favoritos dos jogadores
+  useEffect(() => {
+    const loadFavoriteOperators = async () => {
+      try {
+        const battles = await getBattles();
+        const players = await getPlayers();
+        
+        // Criar mapa de operadores por jogador
+        const operatorCount = {};
+        
+        // Inicializar com lastOperator de cada jogador
+        players.forEach(player => {
+          if (player.lastOperator && player.lastOperator !== 'Unknown' && player.lastOperator.trim() !== '') {
+            if (!operatorCount[player.name]) {
+              operatorCount[player.name] = {};
+            }
+            // Dar um peso inicial ao lastOperator
+            operatorCount[player.name][player.lastOperator] = 1;
+          }
+        });
+        
+        // Contar uso de operadores nas batalhas
+        battles.forEach(battle => {
+          const allPlayers = [...(battle.team1 || []), ...(battle.team2 || [])];
+          allPlayers.forEach(player => {
+            if (player.operator && player.operator !== 'Unknown' && player.operator.trim() !== '') {
+              if (!operatorCount[player.name]) {
+                operatorCount[player.name] = {};
+              }
+              operatorCount[player.name][player.operator] = (operatorCount[player.name][player.operator] || 0) + 1;
+            }
+          });
+        });
+        
+        // Encontrar operador mais usado para cada jogador
+        const favorites = {};
+        Object.keys(operatorCount).forEach(playerName => {
+          const operators = operatorCount[playerName];
+          const mostUsed = Object.keys(operators).reduce((a, b) => 
+            operators[a] > operators[b] ? a : b
+          );
+          favorites[playerName] = mostUsed;
+        });
+        
+        setPlayerFavoriteOperators(favorites);
+        console.log('🎯 Operadores favoritos carregados:', favorites);
+      } catch (error) {
+        console.error('Erro ao carregar operadores favoritos:', error);
+      }
+    };
+    
+    loadFavoriteOperators();
+  }, []);
 
   // Debug: Monitorar mudanças no formData
   useEffect(() => {
@@ -159,17 +214,34 @@ const BattleForm = ({ onClose }) => {
       team2Rounds: 0  // Team 1 (perdedora) - DEFEAT
     };
 
+    // Preencher operadores favoritos automaticamente
+    const team1WithOperators = sampleData.team1.map(player => {
+      const favoriteOp = playerFavoriteOperators[player.name];
+      return {
+        ...player,
+        operator: favoriteOp || '' // Usar operador favorito se existir, senão deixar vazio
+      };
+    });
+    
+    const team2WithOperators = sampleData.team2.map(player => {
+      const favoriteOp = playerFavoriteOperators[player.name];
+      return {
+        ...player,
+        operator: favoriteOp || '' // Usar operador favorito se existir, senão deixar vazio
+      };
+    });
+
     console.log('📥 Carregando dados de exemplo com IDs únicos:');
-    console.log('Team1:', sampleData.team1.map(p => ({ id: p.id, name: p.name, operator: p.operator })));
-    console.log('Team2:', sampleData.team2.map(p => ({ id: p.id, name: p.name, operator: p.operator })));
+    console.log('Team1:', team1WithOperators.map(p => ({ id: p.id, name: p.name, operator: p.operator })));
+    console.log('Team2:', team2WithOperators.map(p => ({ id: p.id, name: p.name, operator: p.operator })));
 
     console.log('📝 A atualizar formData...');
     setFormData(prev => {
       const newData = {
         ...prev,
         map: sampleData.map,
-        team1: sampleData.team1,
-        team2: sampleData.team2,
+        team1: team1WithOperators,
+        team2: team2WithOperators,
         team1Rounds: sampleData.team1Rounds,
         team2Rounds: sampleData.team2Rounds
       };
@@ -179,7 +251,13 @@ const BattleForm = ({ onClose }) => {
 
     console.log('🔄 A mudar para modo manual...');
     setShowImportMode(false);
-    alert('Dados de exemplo carregados! Podes editar os nomes e estatísticas conforme necessário.');
+    
+    const filledCount = [...team1WithOperators, ...team2WithOperators].filter(p => p.operator).length;
+    if (filledCount > 0) {
+      alert(`Dados carregados! ${filledCount} operador(es) preenchido(s) automaticamente com base no histórico. Podes editar conforme necessário.`);
+    } else {
+      alert('Dados carregados! Podes editar os nomes, operadores e estatísticas conforme necessário.');
+    }
   };
 
   const handleSubmit = async (e) => {

@@ -8,7 +8,7 @@ const PlayerRanking = ({ onClose }) => {
   const [battles, setBattles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [minGames, setMinGames] = useState(1);
-  const [activeTab, setActiveTab] = useState('overall'); // 'overall', 'winrate', 'downs', 'damage', 'revives', 'captures'
+  const [activeTab, setActiveTab] = useState('overall'); // 'overall', 'winrate', 'downs', 'damage', 'revives', 'captures', 'assists'
   const [viewMode, setViewMode] = useState('round'); // 'round' (por ronda) ou 'game' (por jogo)
 
   useEffect(() => {
@@ -58,6 +58,9 @@ const PlayerRanking = ({ onClose }) => {
           case 'captures':
             avgValue = player.avgCaptures || 0;
             break;
+          case 'assists':
+            avgValue = player.avgAssists || 0;
+            break;
         }
         
         return {
@@ -68,6 +71,7 @@ const PlayerRanking = ({ onClose }) => {
           avgDamage: player.avgDamage || 0,
           avgRevives: player.avgRevives || 0,
           avgCaptures: player.avgCaptures || 0,
+          avgAssists: player.avgAssists || 0,
           totalMVPs: calculatePlayerMVPs(player.name),
           favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name),
           score: avgValue
@@ -85,7 +89,7 @@ const PlayerRanking = ({ onClose }) => {
       const totalGames = player.totalGames || 0;
       
       // Converter de média por ronda para média por jogo
-      let avgDowns, avgDamage, avgRevives, avgCaptures;
+      let avgDowns, avgDamage, avgRevives, avgCaptures, avgAssists;
       
       if (totalRounds > 0 && totalGames > 0) {
         const roundsPerGame = totalRounds / totalGames;
@@ -93,12 +97,14 @@ const PlayerRanking = ({ onClose }) => {
         avgDamage = player.avgDamage ? (player.avgDamage * roundsPerGame) : 0;
         avgRevives = player.avgRevives ? (player.avgRevives * roundsPerGame) : 0;
         avgCaptures = player.avgCaptures ? (player.avgCaptures * roundsPerGame) : 0;
+        avgAssists = player.avgAssists ? (player.avgAssists * roundsPerGame) : 0;
       } else {
         // Fallback
         avgDowns = player.avgDowns || 0;
         avgDamage = player.avgDamage || 0;
         avgRevives = player.avgRevives || 0;
         avgCaptures = player.avgCaptures || 0;
+        avgAssists = player.avgAssists || 0;
       }
       
       let score = 0;
@@ -118,6 +124,9 @@ const PlayerRanking = ({ onClose }) => {
         case 'captures':
           score = Math.round(avgCaptures * 10) / 10;
           break;
+        case 'assists':
+          score = Math.round(avgAssists * 10) / 10;
+          break;
       }
       
       return {
@@ -128,6 +137,7 @@ const PlayerRanking = ({ onClose }) => {
         avgDamage: Math.round(avgDamage * 10) / 10,
         avgRevives: Math.round(avgRevives * 10) / 10,
         avgCaptures: Math.round(avgCaptures * 10) / 10,
+        avgAssists: Math.round(avgAssists * 10) / 10,
         totalMVPs: calculatePlayerMVPs(player.name),
         favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name),
         score: score
@@ -163,6 +173,7 @@ const PlayerRanking = ({ onClose }) => {
           avgDamage: player.avgDamage || 0,
           avgRevives: player.avgRevives || 0,
           avgCaptures: player.avgCaptures || 0,
+          avgAssists: player.avgAssists || 0,
           totalMVPs: calculatePlayerMVPs(player.name),
           favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name)
         };
@@ -181,6 +192,7 @@ const PlayerRanking = ({ onClose }) => {
         playerData.avgDamage = Math.round(playerData.avgDamage);
         playerData.avgRevives = Math.round(playerData.avgRevives * 10) / 10;
         playerData.avgCaptures = Math.round(playerData.avgCaptures * 10) / 10;
+        playerData.avgAssists = Math.round((playerData.avgAssists || 0) * 10) / 10;
         
         return playerData;
       });
@@ -194,7 +206,7 @@ const PlayerRanking = ({ onClose }) => {
       const totalRounds = player.totalRounds || 0;
       const totalGames = player.totalGames || 0;
       
-      let avgDowns, avgDamage, avgRevives, avgCaptures;
+      let avgDowns, avgDamage, avgRevives, avgCaptures, avgAssists;
       
       if (totalRounds > 0 && totalGames > 0) {
         const roundsPerGame = totalRounds / totalGames;
@@ -202,11 +214,13 @@ const PlayerRanking = ({ onClose }) => {
         avgDamage = player.avgDamage ? (player.avgDamage * roundsPerGame) : 0;
         avgRevives = player.avgRevives ? (player.avgRevives * roundsPerGame) : 0;
         avgCaptures = player.avgCaptures ? (player.avgCaptures * roundsPerGame) : 0;
+        avgAssists = player.avgAssists ? (player.avgAssists * roundsPerGame) : 0;
       } else {
         avgDowns = player.avgDowns || 0;
         avgDamage = player.avgDamage || 0;
         avgRevives = player.avgRevives || 0;
         avgCaptures = player.avgCaptures || 0;
+        avgAssists = player.avgAssists || 0;
       }
       
       return {
@@ -217,6 +231,7 @@ const PlayerRanking = ({ onClose }) => {
         avgDamage,
         avgRevives,
         avgCaptures,
+        avgAssists,
         totalMVPs: calculatePlayerMVPs(player.name),
         favoriteOperator: player.favoriteOperator || calculateFavoriteOperator(player.name)
       };
@@ -248,6 +263,7 @@ const PlayerRanking = ({ onClose }) => {
       playerData.avgDamage = Math.round(playerData.avgDamage);
       playerData.avgRevives = Math.round(playerData.avgRevives * 10) / 10;
       playerData.avgCaptures = Math.round(playerData.avgCaptures * 10) / 10;
+      playerData.avgAssists = Math.round((playerData.avgAssists || 0) * 10) / 10;
       
       return playerData;
     });
@@ -419,6 +435,12 @@ const PlayerRanking = ({ onClose }) => {
             >
               🎯 Captures
             </button>
+            <button 
+              className={`tab ${activeTab === 'assists' ? 'active' : ''}`}
+              onClick={() => setActiveTab('assists')}
+            >
+              🤝 Assists
+            </button>
           </div>
 
           <div className="ranking-filters">
@@ -537,13 +559,14 @@ const PlayerRanking = ({ onClose }) => {
                     <tr>
                       <th>Rank</th>
                       <th>Jogador</th>
-                      <th>{activeTab === 'overall' ? 'Score' : activeTab === 'winrate' ? 'Win Rate' : activeTab === 'downs' ? 'Avg Downs' : activeTab === 'damage' ? 'Avg Damage' : activeTab === 'revives' ? 'Avg Revives' : 'Avg Captures'}</th>
+                      <th>{activeTab === 'overall' ? 'Score' : activeTab === 'winrate' ? 'Win Rate' : activeTab === 'downs' ? 'Avg Downs' : activeTab === 'damage' ? 'Avg Damage' : activeTab === 'revives' ? 'Avg Revives' : activeTab === 'captures' ? 'Avg Captures' : 'Avg Assists'}</th>
                       <th>Win Rate</th>
                       <th>Jogos</th>
                       <th>Avg Downs{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
                       <th>Avg Damage{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
                       <th>Avg Revives{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
                       <th>Avg Captures{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
+                      <th>Avg Assists{viewMode === 'round' ? '/Ronda' : '/Jogo'}</th>
                       <th>MVPs</th>
                       <th>Operador Favorito</th>
                     </tr>
@@ -569,6 +592,7 @@ const PlayerRanking = ({ onClose }) => {
                         <td>{formatNumber(player.avgDamage)}</td>
                         <td>{player.avgRevives}</td>
                         <td>{player.avgCaptures}</td>
+                        <td>{player.avgAssists || 0}</td>
                         <td className="mvp">{player.totalMVPs}</td>
                         <td className="operator">{player.favoriteOperator || '-'}</td>
                       </tr>
