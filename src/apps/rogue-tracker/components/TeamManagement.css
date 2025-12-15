@@ -597,6 +597,28 @@
   text-align: center;
 }
 
+.rivalry-warning {
+  background: rgba(251, 191, 36, 0.15);
+  border: 2px solid #fbbf24;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.warning-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.warning-text {
+  color: #fbbf24;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 .balance-info {
   display: flex;
   justify-content: space-between;
@@ -705,12 +727,238 @@
   color: #b0b0b0;
 }
 
+/* Rivalities Section */
+.rivalries-section {
+  padding: 1rem 0;
+}
+
+.rivalries-section h3 {
+  color: #00d4ff;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.rivalries-description {
+  color: #b0b0b0;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.add-rivalry-section {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.add-rivalry-section h4 {
+  color: #00d4ff;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.rivalry-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rivalry-select-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.rivalry-select-group label {
+  display: block;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.rivalry-select {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rivalry-select:hover {
+  border-color: #00d4ff;
+}
+
+.rivalry-select:focus {
+  outline: none;
+  border-color: #00d4ff;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+.rivalry-vs {
+  color: #00d4ff;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0 0.5rem;
+  align-self: center;
+}
+
+.add-rivalry-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #00d4ff, #0099cc);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.add-rivalry-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0099cc, #007aa3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+}
+
+.add-rivalry-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rivalries-list-section {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.rivalries-list-section h4 {
+  color: #00d4ff;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.no-rivalries {
+  color: #888;
+  text-align: center;
+  font-style: italic;
+  padding: 2rem;
+}
+
+.rivalries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.rivalry-card {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.rivalry-card:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: #00d4ff;
+  transform: translateY(-2px);
+}
+
+.rivalry-players {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.rivalry-player {
+  color: #00d4ff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.rivalry-separator {
+  color: #f87171;
+  font-size: 1.2rem;
+}
+
+.remove-rivalry-btn {
+  background: rgba(248, 113, 113, 0.2);
+  border: 1px solid #f87171;
+  color: #f87171;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.remove-rivalry-btn:hover {
+  background: rgba(248, 113, 113, 0.3);
+  transform: scale(1.1);
+}
+
+.rivalries-info {
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.rivalries-info h4 {
+  color: #00d4ff;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.rivalries-info ul {
+  color: #b0b0b0;
+  margin: 0;
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.rivalries-info li {
+  margin-bottom: 0.5rem;
+}
+
 @media (max-width: 768px) {
   .teams-display {
     grid-template-columns: 1fr;
   }
   
   .player-selection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rivalry-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rivalry-vs {
+    align-self: center;
+    padding: 0.5rem 0;
+  }
+
+  .rivalries-grid {
     grid-template-columns: 1fr;
   }
 }

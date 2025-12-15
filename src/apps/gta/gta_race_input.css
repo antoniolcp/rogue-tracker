@@ -1,0 +1,200 @@
+/* Event Importer Layout - Focus on Table View */
+.event-importer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    /* Fill parent height */
+    min-height: 0;
+    /* Prevent overflow issues in flex items */
+    position: relative;
+    padding: 0 1rem;
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    /* Grow to fill importer */
+    /* Remove absolute positioning to respect flex container flow */
+    position: relative;
+}
+
+.upload-placeholder h3 {
+    color: var(--gta-text-primary);
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 1.5rem 3rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    min-width: 250px;
+    width: auto;
+
+    /* NUCLEAR CENTERING OPTION */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+    transform: translate(-50%, -50%) scale(1.05) !important;
+    /* Maintain centering on hover, override generic translateY */
+}
+
+.hint {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Detection Table */
+.preview-table-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-wrapper {
+    flex: 1;
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 1rem 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.detection-table th {
+    background: rgba(0, 0, 0, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.point-cell {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #ccc;
+}
+
+.total-cell {
+    font-weight: bold;
+    color: var(--gta-accent);
+    font-size: 1.1rem;
+    text-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
+}
+
+.gta-input-clean {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.gta-input-clean:focus {
+    outline: none;
+    border-bottom: 1px solid var(--gta-accent);
+}
+
+.action-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+/* Rogue Tracker Style Cards for Playlist */
+.playlists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.rogue-card {
+    background-color: rgba(20, 20, 20, 0.8);
+    /* Dark background */
+    border: 2px solid var(--gta-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 180px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.rogue-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gta-accent);
+    box-shadow: 0 10px 25px rgba(255, 184, 0, 0.4), 0 0 20px rgba(255, 184, 0, 0.2);
+    background: rgba(30, 30, 30, 0.9);
+}
+
+.rogue-card-header {
+    margin-bottom: 1rem;
+}
+
+.rogue-date {
+    color: var(--gta-accent);
+    /* GTA Yellow */
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    line-height: 1.4;
+    text-shadow: 0 0 8px rgba(255, 184, 0, 0.5);
+}
+
+.rogue-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rogue-subtitle {
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 700;
+    margin: 0;
+}
+
+.rogue-stat-group {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.rogue-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    /* Slate gray */
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.rogue-value {
+    font-size: 1.25rem;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}

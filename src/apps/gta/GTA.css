@@ -1,0 +1,879 @@
+.gta-app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 30%, #0f1419 60%, #0a0a0a 100%);
+  color: #e0e0e0;
+  position: relative;
+}
+
+.gta-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.gta-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-top: 2rem;
+}
+
+.gta-title {
+  font-size: 4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gta-accent), var(--gta-accent-tertiary), var(--gta-accent-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  text-shadow: 0 0 15px rgba(255, 184, 0, 0.4);
+  filter: drop-shadow(0 0 10px rgba(255, 184, 0, 0.2));
+}
+
+.gta-subtitle {
+  font-size: 1.5rem;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+}
+
+.gta-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.gta-placeholder {
+  text-align: center;
+  background: transparent;
+  border: none;
+  /* Removed border */
+  padding: 4rem;
+  max-width: 600px;
+}
+
+.placeholder-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}
+
+.gta-placeholder h2 {
+  color: var(--gta-accent);
+  font-size: 2rem;
+  margin: 1rem 0;
+  text-shadow: 0 0 8px rgba(255, 184, 0, 0.4);
+}
+
+.gta-placeholder p {
+  color: #b0b0b0;
+  font-size: 1.2rem;
+}
+
+.back-to-hub-btn {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.2), rgba(255, 107, 0, 0.15));
+  border: 2px solid var(--gta-border);
+  color: var(--gta-accent);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  text-shadow: 0 0 5px rgba(255, 184, 0, 0.4);
+  box-shadow: 0 4px 10px rgba(255, 184, 0, 0.2);
+}
+
+.back-to-hub-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.3), rgba(255, 107, 0, 0.25));
+  border-color: var(--gta-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 184, 0, 0.5);
+}
+
+/* GTA App Styles - Based on Rogue Tracker Design */
+
+/* Variables - Modern GTA V Inspired Colors */
+:root {
+  --gta-bg-primary: #0a0a0a;
+  --gta-bg-secondary: #1a1a1a;
+  /* Deep Black */
+  --gta-accent: #FFB800;
+  /* GTA Yellow/Orange - Iconic GTA color */
+  --gta-accent-hover: #FFD700;
+  --gta-accent-secondary: #00D4FF;
+  /* Los Santos Sky Blue */
+  --gta-accent-tertiary: #FF6B00;
+  /* GTA Orange */
+  --gta-text-primary: #ffffff;
+  --gta-text-secondary: #b0b0b0;
+  --gta-card-bg: rgba(15, 15, 15, 0.9);
+  --gta-border: rgba(255, 184, 0, 0.3);
+  --gta-border-glow: rgba(255, 184, 0, 0.4);
+}
+
+.gta-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 30%, #0f1419 60%, #0a0a0a 100%);
+  color: var(--gta-text-primary);
+}
+
+/* Header / Hero */
+.gta-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  background: url('https://wallpapers.com/images/hd/gta-5-background-h8s0i4w8c4w8c4w8.jpg') no-repeat center center;
+  background-size: cover;
+}
+
+.gta-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(10, 10, 10, 0.75) 50%, rgba(0, 0, 0, 0.85) 100%);
+  /* Dark overlay to make text readable */
+  z-index: 1;
+}
+
+.gta-placeholder {
+  text-align: center;
+  background: rgba(20, 20, 20, 0.6);
+  border: 2px solid var(--gta-border);
+  /* Restored border */
+  border-radius: 20px;
+  padding: 4rem;
+  max-width: 600px;
+  box-shadow: 0 0 40px rgba(255, 184, 0, 0.2), inset 0 0 20px rgba(255, 184, 0, 0.05);
+}
+
+.placeholder-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  color: var(--gta-accent);
+  filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.4));
+}
+
+.gta-placeholder h2 {
+  color: var(--gta-accent);
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+
+.gta-hero-content {
+  text-align: center;
+  max-width: 700px;
+  z-index: 3;
+  position: relative;
+  /* Restored Box Style */
+  background: rgba(20, 20, 20, 0.8);
+  padding: 3rem;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--gta-border);
+  box-shadow: 0 0 30px rgba(255, 184, 0, 0.15), inset 0 0 20px rgba(255, 184, 0, 0.05);
+  /* GTA Yellow Glow */
+}
+
+.gta-hero-title {
+  font-family: 'Impact', sans-serif;
+  font-size: 5rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.gta-text-main {
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.gta-text-accent {
+  display: block;
+  color: var(--gta-accent);
+  font-size: 3rem;
+  margin-top: 0.5rem;
+  text-shadow: 0 0 15px rgba(255, 184, 0, 0.6), 0 0 30px rgba(255, 184, 0, 0.3);
+}
+
+.gta-hero-subtitle {
+  font-size: 1.5rem;
+  color: #ccc;
+  margin-bottom: 3rem;
+  letter-spacing: 1px;
+}
+
+.gta-hero-char {
+  position: absolute;
+  bottom: 0;
+  right: 5%;
+  height: 90%;
+  max-width: 50%;
+  object-fit: contain;
+  z-index: 2;
+  filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  animation: slideUp 1s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .gta-hero-char {
+    height: 70%;
+    right: -10%;
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 768px) {
+  .gta-hero-char {
+    display: none;
+    /* Hide on mobile to save space */
+  }
+}
+
+.gta-hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+/* Buttons */
+.gta-btn {
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gta-btn-primary {
+  background: linear-gradient(135deg, var(--gta-accent) 0%, var(--gta-accent-tertiary) 100%);
+  color: #000;
+  font-weight: 900;
+  box-shadow: 0 4px 10px rgba(255, 184, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.gta-btn-primary:hover {
+  background: linear-gradient(135deg, var(--gta-accent-hover) 0%, var(--gta-accent) 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(255, 184, 0, 0.5);
+}
+
+/* Main Content Features Grid */
+.gta-main {
+  padding: 4rem 2rem;
+  z-index: 2;
+  position: relative;
+}
+
+.gta-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gta-feature-card {
+  background: var(--gta-card-bg);
+  border: 2px solid var(--gta-border);
+  /* Restored visible border */
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.gta-feature-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gta-accent);
+  box-shadow: 0 10px 25px rgba(255, 184, 0, 0.25), 0 0 20px rgba(255, 184, 0, 0.15);
+  background: rgba(30, 30, 30, 0.9);
+}
+
+.gta-feature-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  /* Reset to white, let hover highlight it */
+}
+
+.gta-feature-card h3 {
+  color: var(--gta-accent);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
+}
+
+.gta-feature-card:hover h3 {
+  color: var(--gta-accent-hover);
+  text-shadow: 0 0 20px rgba(255, 184, 0, 0.8);
+}
+
+/* Overlay & Modals (Reused from Rogue style but themed) */
+.gta-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  /* Darker backdrop */
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.gta-modal-container {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+  /* Modern dark theme */
+  width: 90%;
+  max-width: 1200px;
+  height: 90vh;
+  border-radius: 16px;
+  border: 2px solid var(--gta-border);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 60px rgba(255, 184, 0, 0.3), inset 0 0 40px rgba(255, 184, 0, 0.05);
+  overflow: hidden;
+  color: white;
+}
+
+.gta-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid var(--gta-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.1) 0%, rgba(255, 107, 0, 0.05) 100%);
+  box-shadow: 0 2px 10px rgba(255, 184, 0, 0.2);
+}
+
+.gta-modal-header h2 {
+  font-family: 'Impact', sans-serif;
+  color: var(--gta-accent);
+  font-size: 2rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 15px rgba(255, 184, 0, 0.6);
+}
+
+.gta-close-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 2.5rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.gta-close-btn:hover {
+  color: var(--gta-accent);
+}
+
+.gta-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  /* Enable flex layout for children */
+  flex-direction: column;
+  /* Stack children vertically */
+}
+
+/* Base inputs thematic overrides */
+input.gta-input,
+select.gta-input {
+  background: rgba(20, 20, 20, 0.7);
+  border: 2px solid rgba(255, 184, 0, 0.3);
+  color: white;
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+input.gta-input:focus,
+select.gta-input:focus {
+  border-color: var(--gta-accent);
+  outline: none;
+  box-shadow: 0 0 15px rgba(255, 184, 0, 0.4);
+  background: rgba(30, 30, 30, 0.8);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .gta-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .gta-features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gta-hero-title {
+    font-size: 3rem;
+  }
+
+  .gta-text-accent {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .gta-title {
+    font-size: 2.5rem;
+  }
+
+  .gta-container {
+    padding: 1rem;
+  }
+
+  .back-to-hub-btn {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* =========================================
+   GTA THEME OVERRIDES (Rogue Tracker Style)
+   ========================================= */
+
+/* Main Containers */
+.gta-app .game-list-container,
+.gta-app .game-list-overlay,
+.gta-app .game-detail {
+  background: rgba(0, 0, 0, 0.95) !important;
+  /* Almost opaque black */
+  border-color: #333 !important;
+}
+
+.gta-app .game-list-container {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+  border: 2px solid var(--gta-border) !important;
+  /* GTA Yellow border */
+}
+
+/* Headers */
+.gta-app .game-list-header,
+.gta-app .detail-header {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.15) 0%, rgba(255, 107, 0, 0.1) 100%) !important;
+  /* GTA Yellow gradient bg */
+  border-bottom: 2px solid var(--gta-border) !important;
+}
+
+.gta-app .game-list-header h2,
+.gta-app .detail-header h3 {
+  color: var(--gta-accent) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-family: inherit !important;
+  font-weight: bold !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+  font-size: 2rem !important;
+}
+
+/* Cards (Playlist Items) */
+.gta-app .game-card,
+.gta-app .rogue-card {
+  background: rgba(20, 20, 20, 0.7) !important;
+  /* Dark background */
+  border: 2px solid var(--gta-border) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.gta-app .game-card:hover,
+.gta-app .rogue-card:hover {
+  background: rgba(30, 30, 30, 0.9) !important;
+  border-color: var(--gta-accent) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 30px rgba(255, 184, 0, 0.4), 0 0 20px rgba(255, 184, 0, 0.2) !important;
+}
+
+/* Text Colors */
+.gta-app .game-date,
+.gta-app .rogue-date {
+  color: var(--gta-accent) !important;
+  /* Purple */
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+}
+
+.gta-app .game-number,
+.gta-app .rogue-subtitle {
+  color: #ccc !important;
+  font-weight: bold !important;
+}
+
+.gta-app .game-map {
+  color: var(--gta-accent) !important;
+  font-weight: bold !important;
+}
+
+.gta-app .game-rounds {
+  color: #fff !important;
+  font-family: 'Courier New', monospace !important;
+  font-weight: bold !important;
+}
+
+.gta-app .rogue-value {
+  color: #fff !important;
+}
+
+/* MVP Section */
+.gta-app .mvp-section {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.2) 0%, rgba(255, 107, 0, 0.1) 100%) !important;
+  border: 2px solid var(--gta-accent) !important;
+  box-shadow: 0 8px 25px rgba(255, 184, 0, 0.3) !important;
+}
+
+.gta-app .mvp-label {
+  color: #fff !important;
+  text-shadow: none !important;
+}
+
+.gta-app .mvp-name {
+  color: var(--gta-accent) !important;
+  font-family: inherit !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.gta-app .mvp-operator {
+  color: #ddd !important;
+}
+
+.gta-app .avatar-circle.mvp-avatar-circle {
+  background: var(--gta-accent) !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+}
+
+/* Team Sections (Tabular Data) */
+.gta-app .team-section {
+  background: rgba(20, 20, 20, 0.6) !important;
+  border: 2px solid var(--gta-border) !important;
+}
+
+.gta-app .team-number {
+  background: linear-gradient(135deg, var(--gta-accent) 0%, var(--gta-accent-tertiary) 100%) !important;
+  color: #000 !important;
+  font-weight: 900 !important;
+}
+
+.gta-app .team-label {
+  color: var(--gta-accent) !important;
+  font-family: inherit !important;
+  letter-spacing: 1px;
+}
+
+.gta-app .stat-label {
+  color: #888 !important;
+}
+
+.gta-app .stat-value {
+  color: #fff !important;
+}
+
+/* Buttons */
+.gta-app .close-btn,
+.gta-app .back-btn {
+  background: linear-gradient(135deg, var(--gta-accent) 0%, var(--gta-accent-tertiary) 100%) !important;
+  color: #000 !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 15px rgba(255, 184, 0, 0.5) !important;
+}
+
+.gta-app .close-btn:hover,
+.gta-app .back-btn:hover {
+  background: linear-gradient(135deg, var(--gta-accent-hover) 0%, var(--gta-accent) 100%) !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 20px rgba(255, 184, 0, 0.7) !important;
+}
+
+/* Scrollbars */
+.gta-app .game-list-content::-webkit-scrollbar-thumb {
+  background: var(--gta-accent) !important;
+}
+
+.gta-app .text-cyan {
+  color: var(--gta-accent) !important;
+}
+
+/* Additional Component Styles */
+.gta-card {
+  background: var(--gta-card-bg);
+  border: 2px solid var(--gta-border);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.gta-card:hover {
+  border-color: var(--gta-accent);
+  box-shadow: 0 8px 25px rgba(255, 184, 0, 0.3);
+}
+
+.gta-card h3 {
+  color: var(--gta-accent);
+  margin-top: 0;
+  text-transform: uppercase;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
+}
+
+.gta-forms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.gta-lists-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.gta-card.full-width {
+  width: 100%;
+}
+
+/* Teams Manager Styles */
+.teams-manager-container h2 {
+  color: var(--gta-accent);
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 900;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px rgba(255, 184, 0, 0.6);
+}
+
+.team-item {
+  background: rgba(20, 20, 20, 0.6);
+  border: 2px solid var(--gta-border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.team-item:hover {
+  border-color: var(--gta-accent);
+  box-shadow: 0 4px 15px rgba(255, 184, 0, 0.2);
+  background: rgba(30, 30, 30, 0.8);
+}
+
+.team-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.player-tag {
+  display: inline-block;
+  background: rgba(255, 184, 0, 0.1);
+  border: 1px solid var(--gta-border);
+  color: var(--gta-text-primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  margin: 0.3rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.player-tag:hover {
+  background: rgba(255, 184, 0, 0.2);
+  border-color: var(--gta-accent);
+}
+
+.empty-team {
+  color: var(--gta-text-secondary);
+  font-style: italic;
+}
+
+/* Global Ranking Styles */
+.global-ranking {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ranking-header {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.15) 0%, rgba(255, 107, 0, 0.1) 100%);
+  border: 2px solid var(--gta-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(255, 184, 0, 0.2);
+}
+
+.ranking-header h2 {
+  color: var(--gta-accent);
+  text-transform: uppercase;
+  font-weight: 900;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 0 15px rgba(255, 184, 0, 0.6);
+  font-size: 2.5rem;
+}
+
+.ranking-stats-summary {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-box span {
+  color: var(--gta-text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.stat-box strong {
+  color: var(--gta-accent);
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
+}
+
+.ranking-table-card {
+  flex: 1;
+  overflow: auto;
+}
+
+.gta-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(20, 20, 20, 0.6);
+}
+
+.gta-table thead {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.2) 0%, rgba(255, 107, 0, 0.1) 100%);
+  border-bottom: 2px solid var(--gta-border);
+}
+
+.gta-table th {
+  color: var(--gta-accent);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  text-shadow: 0 0 8px rgba(255, 184, 0, 0.5);
+}
+
+.gta-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 184, 0, 0.1);
+  color: var(--gta-text-primary);
+}
+
+.gta-table tbody tr:hover {
+  background: rgba(255, 184, 0, 0.05);
+}
+
+.gta-table tbody tr.top-1 {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.15) 0%, rgba(255, 107, 0, 0.1) 100%);
+  border-left: 4px solid var(--gta-accent);
+}
+
+.gta-table tbody tr.top-2 {
+  background: rgba(255, 184, 0, 0.08);
+  border-left: 4px solid var(--gta-accent-secondary);
+}
+
+.gta-table tbody tr.top-3 {
+  background: rgba(255, 184, 0, 0.05);
+  border-left: 4px solid var(--gta-accent-tertiary);
+}
+
+.rank-pos {
+  font-weight: 900;
+  color: var(--gta-accent);
+  font-size: 1.2rem;
+}
+
+.pilot-name {
+  font-weight: 700;
+  color: var(--gta-text-primary);
+}
+
+.points-cell {
+  font-weight: 900;
+  color: var(--gta-accent);
+  font-size: 1.1rem;
+  text-shadow: 0 0 8px rgba(255, 184, 0, 0.5);
+}
+
+.team-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
