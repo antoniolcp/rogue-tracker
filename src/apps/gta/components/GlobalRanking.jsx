@@ -212,45 +212,45 @@ export function GlobalRanking() {
             <div className="ranking-header">
                 <h2>RANKING GLOBAL</h2>
 
-                <div className="gta-hero-buttons" style={{ marginBottom: '1.5rem', justifyContent: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                <div className="gta-hero-buttons" style={{ justifyContent: 'flex-start', gap: '0.8rem', flexWrap: 'wrap' }}>
                     <button
                         className={`gta-btn ${activeTab === 'total' ? 'gta-btn-primary' : ''}`}
                         onClick={() => setActiveTab('total')}
                         style={{
-                            fontSize: '0.9rem',
+                            fontSize: '0.85rem',
                             padding: '0.5rem 1rem',
                             border: '1px solid var(--gta-border)',
                             background: activeTab !== 'total' ? 'transparent' : undefined,
                             color: activeTab !== 'total' ? 'white' : 'black'
                         }}
                     >
-                        TOTAL DE PONTOS
+                        TOTAL
                     </button>
                     <button
                         className={`gta-btn ${activeTab === 'ppr' ? 'gta-btn-primary' : ''}`}
                         onClick={() => setActiveTab('ppr')}
                         style={{
-                            fontSize: '0.9rem',
+                            fontSize: '0.85rem',
                             padding: '0.5rem 1rem',
                             border: '1px solid var(--gta-border)',
                             background: activeTab !== 'ppr' ? 'transparent' : undefined,
                             color: activeTab !== 'ppr' ? 'white' : 'black'
                         }}
                     >
-                        MÉDIA (PPR)
+                        PPR
                     </button>
                     <button
                         className={`gta-btn ${activeTab === 'teams' ? 'gta-btn-primary' : ''}`}
                         onClick={() => setActiveTab('teams')}
                         style={{
-                            fontSize: '0.9rem',
+                            fontSize: '0.85rem',
                             padding: '0.5rem 1rem',
                             border: '1px solid var(--gta-border)',
                             background: activeTab !== 'teams' ? 'transparent' : undefined,
                             color: activeTab !== 'teams' ? 'white' : 'black'
                         }}
                     >
-                        EQUIPAS (CAMPEONATOS)
+                        EQUIPAS
                     </button>
                 </div>
 

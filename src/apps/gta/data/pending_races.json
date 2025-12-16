@@ -1,7 +1,155 @@
 [
   {
-    "playerName": "Example Player",
-    "races": [15, 12, 10], 
-    "color": "#ffffff"
+    "playerName": "antoniolamycp9",
+    "races": [
+      7,
+      15,
+      7,
+      15,
+      7,
+      15,
+      5,
+      12,
+      13,
+      13,
+      12,
+      13
+    ]
+  },
+  {
+    "playerName": "franciscomrfe",
+    "races": [
+      12,
+      10,
+      6,
+      10,
+      12,
+      10,
+      7,
+      5,
+      16,
+      16,
+      15,
+      15
+    ]
+  },
+  {
+    "playerName": "Gametti",
+    "races": [
+      6,
+      7,
+      8,
+      12,
+      15,
+      5,
+      15,
+      10,
+      15,
+      15,
+      12,
+      12
+    ]
+  },
+  {
+    "playerName": "Andre_santinho",
+    "races": [
+      5,
+      4,
+      15,
+      4,
+      10,
+      4,
+      10,
+      7,
+      15,
+      11,
+      16,
+      15
+    ]
+  },
+  {
+    "playerName": "Benny_Fuego",
+    "races": [
+      10,
+      5,
+      5,
+      7,
+      5,
+      6,
+      6,
+      3,
+      15,
+      10,
+      15,
+      15
+    ]
+  },
+  {
+    "playerName": "fifagomesg-19",
+    "races": [
+      4,
+      6,
+      0,
+      3,
+      3,
+      3,
+      4,
+      6,
+      12,
+      10,
+      13,
+      12
+    ]
+  },
+  {
+    "playerName": "tiagofranca6",
+    "races": [
+      0,
+      0,
+      0,
+      5,
+      4,
+      7,
+      0,
+      4,
+      12,
+      12,
+      12,
+      12
+    ]
+  },
+  {
+    "playerName": "juveleo1979",
+    "races": [
+      15,
+      8,
+      10,
+      6,
+      6,
+      12,
+      12,
+      15,
+      15,
+      14,
+      14,
+      14
+    ]
+  },
+  {
+    "playerName": "Duarte_Sogalho",
+    "races": [
+      8,
+      12,
+      12,
+      8,
+      8,
+      8,
+      8,
+      8,
+      12,
+      12,
+      12,
+      12
+    ]
   }
 ]

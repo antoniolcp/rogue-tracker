@@ -830,24 +830,30 @@ select.gta-input:focus {
   background: linear-gradient(135deg, rgba(255, 184, 0, 0.15) 0%, rgba(255, 107, 0, 0.1) 100%);
   border: 2px solid var(--gta-border);
   border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 4px 15px rgba(255, 184, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .ranking-header h2 {
   color: var(--gta-accent);
   text-transform: uppercase;
   font-weight: 900;
-  margin: 0 0 1rem 0;
+  margin: 0;
   text-shadow: 0 0 15px rgba(255, 184, 0, 0.6);
-  font-size: 2.5rem;
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .ranking-stats-summary {
   display: flex;
-  gap: 2rem;
-  margin-top: 1rem;
+  gap: 1.5rem;
+  margin-top: 0;
 }
 
 .stat-box {
@@ -865,7 +871,7 @@ select.gta-input:focus {
 
 .stat-box strong {
   color: var(--gta-accent);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 900;
   text-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
 }
@@ -873,137 +879,94 @@ select.gta-input:focus {
 .ranking-table-card {
   flex: 1;
   overflow: auto;
+  border-color: var(--gta-accent);
+  box-shadow: 0 0 20px rgba(255, 184, 0, 0.15);
 }
 
-/* Premium Mobile Card View */
+/* Compact Mobile View (High Density) */
 @media (max-width: 768px) {
   .ranking-table-card {
-    overflow: visible;
-    /* Cards need to flow naturally */
-    background: transparent;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: transparent !important;
     border: none !important;
     box-shadow: none !important;
   }
 
-  .gta-table,
-  .gta-table tbody,
-  .gta-table tr,
-  .gta-table td {
-    display: block;
+  .gta-table {
+    display: table !important;
+    /* Revert to table */
     width: 100%;
+    min-width: unset;
+    /* Allow it to shrink, or scroll if needed */
+    border-collapse: collapse;
   }
 
   .gta-table thead {
-    display: none;
-    /* Hide headers */
+    display: table-header-group !important;
+    /* Show headers again */
+  }
+
+  .gta-table tbody {
+    display: table-row-group !important;
   }
 
   .gta-table tr {
-    background: rgba(30, 30, 30, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    transition: transform 0.2s ease;
+    display: table-row !important;
+    background: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
   }
 
-  .gta-table tr:hover {
-    transform: translateY(-2px);
-    border-color: var(--gta-accent);
-  }
-
+  /* Compact Cells */
+  .gta-table th,
   .gta-table td {
-    text-align: right;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.95rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: table-cell !important;
+    padding: 0.4rem 0.2rem !important;
+    /* Very tight padding */
+    font-size: 0.8rem !important;
+    /* Small font */
+    text-align: center;
+    border: none !important;
+    /* No borders as requested */
+    white-space: nowrap;
   }
 
-  .gta-table td:last-child {
-    border-bottom: none;
-  }
-
-  .gta-table td::before {
-    content: attr(data-label);
-    float: left;
-    font-weight: 700;
-    color: #94a3b8;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  /* Specific styling for Rank and Name to make them header-like */
-  .gta-table td.rank-pos {
-    background: transparent;
-    font-size: 2rem;
-    position: absolute;
-    top: 0.5rem;
-    left: 1rem;
-    width: auto;
-    border-bottom: none;
-    padding: 0;
-    color: rgba(255, 255, 255, 0.1);
-    font-weight: 900;
-    height: auto;
-    text-align: left;
-    z-index: 0;
-  }
-
-  .gta-table td.rank-pos::before {
-    display: none;
-  }
-
+  /* Specific Column Styling */
   .gta-table td.pilot-name {
     text-align: left;
-    font-size: 1.4rem;
-    font-weight: 800;
-    border-bottom: 2px solid var(--gta-accent);
-    padding-bottom: 0.8rem;
-    margin-bottom: 0.8rem;
-    padding-left: 2.5rem;
-    /* Make space for rank if needed, or just let them overlap artistically */
-    justify-content: flex-start;
+    max-width: 90px;
+    /* Truncate long names */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+
+  .gta-table td.rank-pos {
+    font-size: 0.8rem !important;
+    width: auto;
+    position: static !important;
+    /* Reset position */
+  }
+
+  /* Reset pseudo-elements from card view */
+  .gta-table td::before {
+    display: none !important;
+  }
+
+  /* Headers */
+  .gta-table th {
+    font-size: 0.7rem !important;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    display: block;
-    /* Break flex for name */
+    color: #888;
+    padding-bottom: 0.5rem !important;
   }
 
-  /* Adjust Rank visual for top players */
-  .top-1 .rank-pos,
-  .top-2 .rank-pos,
-  .top-3 .rank-pos {
-    color: var(--gta-accent);
-    opacity: 0.3;
-    text-shadow: 0 0 20px var(--gta-accent);
-  }
-
-  /* Border Left accent for cards */
-  .top-1 {
-    border-left: 4px solid #FFD700 !important;
-  }
-
-  .top-2 {
-    border-left: 4px solid #C0C0C0 !important;
-  }
-
-  .top-3 {
-    border-left: 4px solid #CD7F32 !important;
-  }
-
-  /* Hide Pilot label */
-  .gta-table td.pilot-name::before {
-    display: none;
+  /* Alternating contrast for readability without borders */
+  .gta-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03) !important;
   }
 }
 
