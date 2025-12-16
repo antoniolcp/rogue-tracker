@@ -299,38 +299,38 @@ export function GlobalRanking() {
                         {activeTab === 'teams' ? (
                             teamRankings.map((p, index) => (
                                 <tr key={index} className={index < 3 ? `top-${index + 1}` : ''} style={{ borderLeft: index < 3 ? `4px solid var(--gta-accent)` : '4px solid #444' }}>
-                                    <td className="rank-pos">{index + 1}</td>
-                                    <td className="pilot-name">
+                                    <td className="rank-pos" data-label="POS">{index + 1}</td>
+                                    <td className="pilot-name" data-label="PILOTO">
                                         <span style={{ color: 'white', fontWeight: 'bold' }}>
                                             {p.name}
                                         </span>
                                         {index === 0 && ' 👑'}
                                     </td>
-                                    <td className="text-center" style={{ color: p.teamChampionships > 0 ? 'var(--gta-accent)' : 'inherit', fontWeight: p.teamChampionships > 0 ? 'bold' : 'normal' }}>
+                                    <td className="text-center" data-label="CAMPEONATOS" style={{ color: p.teamChampionships > 0 ? 'var(--gta-accent)' : 'inherit', fontWeight: p.teamChampionships > 0 ? 'bold' : 'normal' }}>
                                         {p.teamChampionships}
                                     </td>
-                                    <td className="text-center">{p.teamRaces}</td>
-                                    <td className="text-center">{p.teamWins}</td>
-                                    <td className="text-right" style={{ fontWeight: 'bold', color: 'var(--gta-accent)' }}>{p.teamPoints}</td>
-                                    <td className="text-right" style={{ fontFamily: 'monospace' }}>{p.ppr.toFixed(2)}</td>
+                                    <td className="text-center" data-label="CORRIDAS">{p.teamRaces}</td>
+                                    <td className="text-center" data-label="VITÓRIAS">{p.teamWins}</td>
+                                    <td className="text-right" data-label="TOTAL" style={{ fontWeight: 'bold', color: 'var(--gta-accent)' }}>{p.teamPoints}</td>
+                                    <td className="text-right" data-label="PPR" style={{ fontFamily: 'monospace' }}>{p.ppr.toFixed(2)}</td>
                                 </tr>
                             ))
                         ) : (
                             sortedPlayers.map((p, index) => (
                                 <tr key={p.id} className={index < 3 ? `top-${index + 1}` : ''}>
-                                    <td className="rank-pos">{index + 1}</td>
-                                    <td className="pilot-name">
+                                    <td className="rank-pos" data-label="POS">{index + 1}</td>
+                                    <td className="pilot-name" data-label="PILOTO">
                                         {p.name} {index === 0 && '👑'}
                                     </td>
-                                    <td className="text-center" style={{ color: p.championships > 0 ? 'var(--gta-accent)' : '#666', fontWeight: p.championships > 0 ? 'bold' : 'normal' }}>
+                                    <td className="text-center" data-label="CAMPEONATOS" style={{ color: p.championships > 0 ? 'var(--gta-accent)' : '#666', fontWeight: p.championships > 0 ? 'bold' : 'normal' }}>
                                         {p.championships}
                                     </td>
-                                    <td className="text-center">{p.stats.races}</td>
-                                    <td className="text-center">{p.stats.wins}</td>
-                                    <td className="text-right points-cell" style={{ fontWeight: activeTab === 'total' ? 'bold' : 'normal', color: activeTab === 'total' ? 'var(--gta-accent)' : 'white' }}>
+                                    <td className="text-center" data-label="RACES">{p.stats.races}</td>
+                                    <td className="text-center" data-label="WINS">{p.stats.wins}</td>
+                                    <td className="text-right points-cell" data-label="TOTAL" style={{ fontWeight: activeTab === 'total' ? 'bold' : 'normal', color: activeTab === 'total' ? 'var(--gta-accent)' : 'white' }}>
                                         {p.stats.totalPoints}
                                     </td>
-                                    <td className="text-right" style={{ fontWeight: activeTab === 'ppr' ? 'bold' : 'normal', color: activeTab === 'ppr' ? 'var(--gta-accent)' : 'white' }}>
+                                    <td className="text-right" data-label="PPR" style={{ fontWeight: activeTab === 'ppr' ? 'bold' : 'normal', color: activeTab === 'ppr' ? 'var(--gta-accent)' : 'white' }}>
                                         {p.ppr.toFixed(2)}
                                     </td>
                                 </tr>

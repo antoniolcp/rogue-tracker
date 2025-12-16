@@ -693,6 +693,30 @@ select.gta-input:focus {
   box-shadow: 0 6px 20px rgba(255, 184, 0, 0.7) !important;
 }
 
+/* Mobile Border Removals */
+@media (max-width: 768px) {
+
+  .gta-card,
+  .gta-feature-card,
+  .gta-placeholder,
+  .gta-hero-content,
+  .ranking-header,
+  .gta-modal-container {
+    border: none !important;
+    box-shadow: none !important;
+    /* Optional: simpler look */
+    background: transparent !important;
+    /* Or keep bg but remove border */
+  }
+
+  /* Keep background opacity for readability but remove containment styling */
+  .gta-feature-card,
+  .gta-hero-content,
+  .ranking-header {
+    background: rgba(20, 20, 20, 0.8) !important;
+  }
+}
+
 /* Scrollbars */
 .gta-app .game-list-content::-webkit-scrollbar-thumb {
   background: var(--gta-accent) !important;
@@ -851,35 +875,135 @@ select.gta-input:focus {
   overflow: auto;
 }
 
-/* Ensure horizontal scroll for tables on mobile */
+/* Premium Mobile Card View */
 @media (max-width: 768px) {
   .ranking-table-card {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
+    /* Cards need to flow naturally */
+    background: transparent;
+    border: none !important;
+    box-shadow: none !important;
   }
 
-  .gta-table {
-    min-width: 600px;
-    /* Force scroll */
-  }
-
-  .gta-table th,
+  .gta-table,
+  .gta-table tbody,
+  .gta-table tr,
   .gta-table td {
-    padding: 0.5rem;
-    font-size: 0.85rem;
+    display: block;
+    width: 100%;
   }
 
-  .ranking-header {
+  .gta-table thead {
+    display: none;
+    /* Hide headers */
+  }
+
+  .gta-table tr {
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 1rem;
     padding: 1rem;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease;
   }
 
-  .ranking-header h2 {
-    font-size: 1.8rem;
+  .gta-table tr:hover {
+    transform: translateY(-2px);
+    border-color: var(--gta-accent);
   }
 
-  .ranking-stats-summary {
-    flex-direction: column;
-    gap: 1rem;
+  .gta-table td {
+    text-align: right;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .gta-table td:last-child {
+    border-bottom: none;
+  }
+
+  .gta-table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 700;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Specific styling for Rank and Name to make them header-like */
+  .gta-table td.rank-pos {
+    background: transparent;
+    font-size: 2rem;
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    width: auto;
+    border-bottom: none;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.1);
+    font-weight: 900;
+    height: auto;
+    text-align: left;
+    z-index: 0;
+  }
+
+  .gta-table td.rank-pos::before {
+    display: none;
+  }
+
+  .gta-table td.pilot-name {
+    text-align: left;
+    font-size: 1.4rem;
+    font-weight: 800;
+    border-bottom: 2px solid var(--gta-accent);
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
+    padding-left: 2.5rem;
+    /* Make space for rank if needed, or just let them overlap artistically */
+    justify-content: flex-start;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: block;
+    /* Break flex for name */
+  }
+
+  /* Adjust Rank visual for top players */
+  .top-1 .rank-pos,
+  .top-2 .rank-pos,
+  .top-3 .rank-pos {
+    color: var(--gta-accent);
+    opacity: 0.3;
+    text-shadow: 0 0 20px var(--gta-accent);
+  }
+
+  /* Border Left accent for cards */
+  .top-1 {
+    border-left: 4px solid #FFD700 !important;
+  }
+
+  .top-2 {
+    border-left: 4px solid #C0C0C0 !important;
+  }
+
+  .top-3 {
+    border-left: 4px solid #CD7F32 !important;
+  }
+
+  /* Hide Pilot label */
+  .gta-table td.pilot-name::before {
+    display: none;
   }
 }
 
