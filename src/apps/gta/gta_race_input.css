@@ -52,6 +52,23 @@
     transition: all 0.3s ease;
 }
 
+@media (max-width: 768px) {
+    .upload-btn {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        min-width: unset;
+    }
+
+    .upload-btn:hover {
+        transform: scale(1.02) !important;
+    }
+}
+
 .upload-btn:hover {
     transform: translate(-50%, -50%) scale(1.05) !important;
     /* Maintain centering on hover, override generic translateY */
@@ -68,6 +85,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .preview-table-container {
+        display: block;
+    }
 }
 
 .table-wrapper {

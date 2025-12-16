@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { gtaService } from '../services/gtaService';
 import { playersRef, getDocs } from '../services/firebase';
+import pendingRaces from '../data/pending_races.json';
 import '../gta_race_input.css';
 
 export function RaceInput({ onRaceAdded, onCancel }) {
@@ -79,6 +80,48 @@ export function RaceInput({ onRaceAdded, onCancel }) {
     const handleImageUpload = (e) => {
         if (e.target.files[0]) {
             simulateOCR();
+        }
+    };
+
+    const loadFromJSON = () => {
+        setIsProcessing(true);
+        try {
+            const data = pendingRaces;
+            if (!data || data.length === 0) {
+                alert("Nenhum dado encontrado em pending_races.json");
+                setIsProcessing(false);
+                return;
+            }
+
+            // Detect number of races from the first player
+            const detectedRaces = data[0].races ? data[0].races.length : 0;
+            if (detectedRaces === 0) {
+                alert("Dados sem corridas detectadas.");
+                setIsProcessing(false);
+                return;
+            }
+            setNumRaces(detectedRaces);
+
+            const rounds = data.map(r => {
+                // Try to find player by name matching
+                const player = availablePlayers.find(p => p.name && p.name.toLowerCase().includes(r.playerName.toLowerCase()))
+                    || { id: null, name: r.playerName };
+
+                return {
+                    playerId: player.id,
+                    playerName: player.name || r.playerName,
+                    races: r.races,
+                    color: r.color || '#a855f7',
+                    total: r.races.reduce((a, b) => a + Number(b), 0)
+                };
+            });
+
+            setGridData(rounds);
+        } catch (err) {
+            console.error("JSON Load Error:", err);
+            alert("Erro ao carregar JSON: " + err.message);
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -171,6 +214,9 @@ export function RaceInput({ onRaceAdded, onCancel }) {
                         {isProcessing ? "PROCESSANDO..." : "📸 CARREGAR FOTO"}
                         <input type="file" onChange={handleImageUpload} hidden accept="image/*" />
                     </label>
+                    <button className="gta-btn" onClick={loadFromJSON} style={{ marginTop: '1rem' }}>
+                        📥 CARREGAR DADOS PENDENTES
+                    </button>
                 </div>
             ) : (
                 <div className="preview-table-container">

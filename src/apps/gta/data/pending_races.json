@@ -1,0 +1,7 @@
+[
+  {
+    "playerName": "Example Player",
+    "races": [15, 12, 10], 
+    "color": "#ffffff"
+  }
+]
