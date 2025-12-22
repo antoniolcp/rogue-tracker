@@ -896,6 +896,41 @@
   border-bottom: none;
 }
 
+.import-format-info {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.import-format-info h4 {
+  color: #00d4ff;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.import-format-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.import-format-info li {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  color: #d0d0d0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.import-format-info li:last-child {
+  border-bottom: none;
+}
+
+.import-format-info strong {
+  color: #ff6b35;
+}
+
 .import-actions {
   text-align: center;
 }
