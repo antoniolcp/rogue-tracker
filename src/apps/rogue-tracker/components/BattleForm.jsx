@@ -198,20 +198,20 @@ const BattleForm = ({ onClose }) => {
     const baseTime = Date.now();
     const sampleData = {
       map: 'Unknown', // Mapa não especificado no relatório
-      team1: [ // Losers (Purple/Team 1)
-        { id: `player_${baseTime}_1`, name: 'Gametti', operator: 'Unknown', elims: 22, downs: 14, assists: 10, revives: 2, damage: 2583, captures: 4 },
-        { id: `player_${baseTime + 1}_2`, name: 'fifagomesg-19', operator: 'Unknown', elims: 16, downs: 17, assists: 4, revives: 0, damage: 3010, captures: 2 },
-        { id: `player_${baseTime + 2}_3`, name: 'Andre_santinho', operator: 'Unknown', elims: 13, downs: 9, assists: 3, revives: 1, damage: 1879, captures: 4 },
-        { id: `player_${baseTime + 3}_4`, name: 'duartealmeida8', operator: 'Unknown', elims: 10, downs: 5, assists: 6, revives: 2, damage: 1048, captures: 2 }
+      team1: [ // Losers (Team 2 in screenshot - Blue)
+        { id: `player_${baseTime}_1`, name: 'BARROSA10', operator: 'Unknown', elims: 35, downs: 24, assists: 9, revives: 5, damage: 4835, captures: 6 },
+        { id: `player_${baseTime + 1}_2`, name: 'Andre_santinho', operator: 'Unknown', elims: 30, downs: 20, assists: 6, revives: 0, damage: 3975, captures: 9 },
+        { id: `player_${baseTime + 2}_3`, name: 'martim1087', operator: 'Unknown', elims: 29, downs: 21, assists: 9, revives: 0, damage: 3902, captures: 5 },
+        { id: `player_${baseTime + 3}_4`, name: 'antoniolamycp9', operator: 'Unknown', elims: 25, downs: 19, assists: 10, revives: 1, damage: 4362, captures: 2 }
       ],
-      team2: [ // Winners (Blue/Team 2)
-        { id: `player_${baseTime + 4}_5`, name: 'BARROSA10', operator: 'Unknown', elims: 27, downs: 14, assists: 13, revives: 1, damage: 3218, captures: 3 },
-        { id: `player_${baseTime + 5}_6`, name: 'wrrqvy', operator: 'Unknown', elims: 25, downs: 20, assists: 7, revives: 3, damage: 2843, captures: 3 },
-        { id: `player_${baseTime + 6}_7`, name: 'tiagofranca6', operator: 'Unknown', elims: 24, downs: 16, assists: 11, revives: 4, damage: 2577, captures: 3 },
-        { id: `player_${baseTime + 7}_8`, name: 'antoniolamycp9', operator: 'Unknown', elims: 17, downs: 10, assists: 8, revives: 1, damage: 2160, captures: 5 }
+      team2: [ // Winners (Team 3 in screenshot - Purple)
+        { id: `player_${baseTime + 4}_5`, name: 'Gametti', operator: 'Unknown', elims: 47, downs: 38, assists: 8, revives: 0, damage: 6827, captures: 8 },
+        { id: `player_${baseTime + 5}_6`, name: 'miguel_paisana', operator: 'Unknown', elims: 32, downs: 12, assists: 18, revives: 2, damage: 3552, captures: 4 },
+        { id: `player_${baseTime + 6}_7`, name: 'wrrqvy', operator: 'Unknown', elims: 30, downs: 24, assists: 7, revives: 2, damage: 3688, captures: 7 },
+        { id: `player_${baseTime + 7}_8`, name: 'fifagomesg-19', operator: 'Unknown', elims: 26, downs: 15, assists: 10, revives: 2, damage: 3128, captures: 2 }
       ],
-      team1Rounds: 0, // Team 1 (Perdedora)
-      team2Rounds: 3  // Team 2 (Vencedora)
+      team1Rounds: 2, // Team 2 (Perdedora)
+      team2Rounds: 3  // Team 3 (Vencedora)
     };
 
     // Preencher operadores favoritos automaticamente
@@ -326,27 +326,27 @@ const BattleForm = ({ onClose }) => {
                 <h4>Dados da partida real (POST MATCH REPORT - SCOREBOARD):</h4>
                 <div className="sample-teams">
                   <div className="sample-team">
-                    <strong>Team 2 (Vencedora - Azul):</strong>
+                    <strong>Team 3 (Vencedora - Roxo):</strong>
                     <ul>
-                      <li><strong>BARROSA10</strong>: 27 elims, 14 downs, 13 assists, 1 revives, 3218 damage, 3 captures</li>
-                      <li>wrrqvy: 25 elims, 20 downs, 7 assists, 3 revives, 2843 damage, 3 captures</li>
-                      <li>tiagofranca6: 24 elims, 16 downs, 11 assists, 4 revives, 2577 damage, 3 captures</li>
-                      <li>antoniolamycp9: 17 elims, 10 downs, 8 assists, 1 revives, 2160 damage, 5 captures</li>
+                      <li><strong>Gametti</strong>: 47 elims, 38 downs, 8 assists, 0 revives, 6827 damage, 8 captures</li>
+                      <li>miguel_paisana: 32 elims, 12 downs, 18 assists, 2 revives, 3552 damage, 4 captures</li>
+                      <li>wrrqvy: 30 elims, 24 downs, 7 assists, 2 revives, 3688 damage, 7 captures</li>
+                      <li>fifagomesg-19: 26 elims, 15 downs, 10 assists, 2 revives, 3128 damage, 2 captures</li>
                     </ul>
                   </div>
                   <div className="sample-team">
-                    <strong>Team 1 (Perdedora - Roxo):</strong>
+                    <strong>Team 2 (Perdedora - Azul):</strong>
                     <ul>
-                      <li>Gametti: 22 elims, 14 downs, 10 assists, 2 revives, 2583 damage, 4 captures</li>
-                      <li>fifagomesg-19: 16 elims, 17 downs, 4 assists, 0 revives, 3010 damage, 2 captures</li>
-                      <li>Andre_santinho: 13 elims, 9 downs, 3 assists, 1 revives, 1879 damage, 4 captures</li>
-                      <li>duartealmeida8: 10 elims, 5 downs, 6 assists, 2 revives, 1048 damage, 2 captures</li>
+                      <li>BARROSA10: 35 elims, 24 downs, 9 assists, 5 revives, 4835 damage, 6 captures</li>
+                      <li>Andre_santinho: 30 elims, 20 downs, 6 assists, 0 revives, 3975 damage, 9 captures</li>
+                      <li>martim1087: 29 elims, 21 downs, 9 assists, 0 revives, 3902 damage, 5 captures</li>
+                      <li>antoniolamycp9: 25 elims, 19 downs, 10 assists, 1 revives, 4362 damage, 2 captures</li>
                     </ul>
                   </div>
                 </div>
                 <div className="match-info">
                   <p><strong>Match ID:</strong> Latest</p>
-                  <p><strong>Match Result:</strong> Team 2 VICTORY (3) / Team 1 DEFEAT (0)</p>
+                  <p><strong>Match Result:</strong> Team 3 VICTORY (3) / Team 2 DEFEAT (2)</p>
                   <p><strong>Resultado:</strong> Team 2 VICTORY</p>
                 </div>
               </div>
