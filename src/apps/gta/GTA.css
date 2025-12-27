@@ -696,24 +696,99 @@ select.gta-input:focus {
 /* Mobile Border Removals */
 @media (max-width: 768px) {
 
+  /* Mobile: Compact premium card look */
   .gta-card,
   .gta-feature-card,
   .gta-placeholder,
   .gta-hero-content,
   .ranking-header,
   .gta-modal-container {
-    border: none !important;
-    box-shadow: none !important;
-    /* Optional: simpler look */
-    background: transparent !important;
-    /* Or keep bg but remove border */
+    background: rgba(15, 15, 15, 0.95) !important;
+    border: 1px solid rgba(255, 184, 0, 0.15) !important;
+    /* Thinner, subtler border */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+    padding: 1rem !important;
+    /* Reduced padding from 1.5rem */
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem !important;
+    /* Tighter spacing */
   }
 
-  /* Keep background opacity for readability but remove containment styling */
-  .gta-feature-card,
-  .gta-hero-content,
-  .ranking-header {
-    background: rgba(20, 20, 20, 0.8) !important;
+  .gta-title {
+    font-size: 2rem !important;
+    /* Smaller title */
+    margin-bottom: 0.5rem !important;
+  }
+
+  .gta-header {
+    margin-bottom: 1.5rem !important;
+    padding-top: 1rem !important;
+  }
+
+  .gta-feature-icon {
+    font-size: 2.5rem !important;
+    /* Smaller icons */
+    margin-bottom: 0.5rem !important;
+  }
+
+  .gta-feature-card h3 {
+    font-size: 1.2rem !important;
+  }
+
+  /* Ensure text is readable on the dark background */
+  .gta-feature-card:hover,
+  .gta-hero-content:hover {
+    background: rgba(25, 25, 25, 0.98) !important;
+  }
+}
+
+/* Extreme Mobile Compactness Utilities */
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: inline !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: inline !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Extreme Table Compactness */
+  .gta-table th,
+  .gta-table td {
+    padding: 0.25rem 0.1rem !important;
+    font-size: 0.7rem !important;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .gta-table th {
+    font-size: 0.65rem !important;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .pilot-name {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gta-hero-buttons {
+    gap: 0.2rem !important;
+  }
+
+  .gta-btn {
+    padding: 0.3rem 0.6rem !important;
+    font-size: 0.75rem !important;
   }
 }
 

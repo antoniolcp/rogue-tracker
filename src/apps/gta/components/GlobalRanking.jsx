@@ -276,22 +276,22 @@ export function GlobalRanking() {
                         {activeTab === 'teams' ? (
                             <tr>
                                 <th>POS</th>
-                                <th>PILOTO (EQUIPA)</th>
-                                <th className="text-center">CAMPEONATOS</th>
-                                <th className="text-center">CORRIDAS</th>
-                                <th className="text-center">VITÓRIAS</th>
+                                <th><span className="desktop-only">PILOTO (EQUIPA)</span><span className="mobile-only">PILOTO</span></th>
+                                <th className="text-center"><span className="desktop-only">CAMPEONATOS</span><span className="mobile-only">CMP</span></th>
+                                <th className="text-center"><span className="desktop-only">CORRIDAS</span><span className="mobile-only">COR</span></th>
+                                <th className="text-center"><span className="desktop-only">VITÓRIAS</span><span className="mobile-only">VIT</span></th>
                                 <th className="text-right">TOTAL</th>
-                                <th className="text-right">PPR (EQUIPA)</th>
+                                <th className="text-right"><span className="desktop-only">PPR (EQUIPA)</span><span className="mobile-only">PPR</span></th>
                             </tr>
                         ) : (
                             <tr>
                                 <th>POS</th>
                                 <th>PILOTO</th>
-                                <th className="text-center">CAMPEONATOS</th>
-                                <th className="text-center">CORRIDAS</th>
-                                <th className="text-center">VITÓRIAS</th>
+                                <th className="text-center"><span className="desktop-only">CAMPEONATOS</span><span className="mobile-only">CMP</span></th>
+                                <th className="text-center"><span className="desktop-only">CORRIDAS</span><span className="mobile-only">COR</span></th>
+                                <th className="text-center"><span className="desktop-only">VITÓRIAS</span><span className="mobile-only">VIT</span></th>
                                 <th className="text-right" style={{ color: activeTab === 'total' ? 'var(--gta-accent)' : 'white' }}>TOTAL</th>
-                                <th className="text-right" style={{ color: activeTab === 'ppr' ? 'var(--gta-accent)' : 'white' }}>MÉDIA (PPR)</th>
+                                <th className="text-right" style={{ color: activeTab === 'ppr' ? 'var(--gta-accent)' : 'white' }}><span className="desktop-only">MÉDIA (PPR)</span><span className="mobile-only">PPR</span></th>
                             </tr>
                         )}
                     </thead>

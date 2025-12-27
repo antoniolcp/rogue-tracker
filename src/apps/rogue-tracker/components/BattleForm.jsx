@@ -399,14 +399,14 @@ const BattleForm = ({ onClose }) => {
 
                 <div className="scoreboard-table">
                   <div className="table-header">
-                    <div className="header-cell player">PLAYER</div>
-                    <div className="header-cell">OPERADOR</div>
-                    <div className="header-cell">ELIMS</div>
-                    <div className="header-cell">DOWNS</div>
-                    <div className="header-cell">ASSISTS</div>
-                    <div className="header-cell">REVIVES</div>
-                    <div className="header-cell">DAMAGE</div>
-                    <div className="header-cell">CAPTURES</div>
+                    <div className="header-cell player"><span className="desktop-only">PLAYER</span><span className="mobile-only">PLY</span></div>
+                    <div className="header-cell"><span className="desktop-only">OPERADOR</span><span className="mobile-only">OP</span></div>
+                    <div className="header-cell"><span className="desktop-only">ELIMS</span><span className="mobile-only">K</span></div>
+                    <div className="header-cell"><span className="desktop-only">DOWNS</span><span className="mobile-only">D</span></div>
+                    <div className="header-cell"><span className="desktop-only">ASSISTS</span><span className="mobile-only">A</span></div>
+                    <div className="header-cell"><span className="desktop-only">REVIVES</span><span className="mobile-only">R</span></div>
+                    <div className="header-cell"><span className="desktop-only">DAMAGE</span><span className="mobile-only">DMG</span></div>
+                    <div className="header-cell"><span className="desktop-only">CAPTURES</span><span className="mobile-only">CP</span></div>
                   </div>
 
                   {/* Team 1 */}
