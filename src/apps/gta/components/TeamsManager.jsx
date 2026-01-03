@@ -7,6 +7,8 @@ export function TeamsManager() {
     const [activeTab, setActiveTab] = useState('rivalries'); // 'rivalries' or 'generator'
 
     // Generator State
+    const [generatorStep, setGeneratorStep] = useState(1);
+    const [numTeams, setNumTeams] = useState(2);
     const [selectedPlayers, setSelectedPlayers] = useState([]);
     const [generatedTeams, setGeneratedTeams] = useState(null);
 
@@ -56,28 +58,26 @@ export function TeamsManager() {
             setSelectedPlayers(current => current.filter(p => p !== playerName));
             setGeneratedTeams(null);
         } else {
-            if (selectedPlayers.length < 8) {
+            // max limit check? Let's say max 20 players for now to avoid freezing
+            if (selectedPlayers.length < 20) {
                 setSelectedPlayers(current => [...current, playerName]);
                 setGeneratedTeams(null);
             } else {
-                alert("Máximo de 8 jogadores!");
+                alert("Máximo de 20 jogadores por segurança!");
             }
         }
     };
 
     const calculatePlayerRank = (player) => {
         const stats = player.stats || { wins: 0, totalPoints: 0, races: 0 };
-        const winRate = stats.races > 0 ? (stats.wins / stats.races) : 0;
-        const totalPoints = stats.totalPoints || 0;
-
-        // Simple weighted score: Points (70%) + WinRate*100 (30%)
-        // Normalized roughly: 1000 points = 1000, 50% WR * 20 = 1000
-        return totalPoints + (winRate * 500);
+        // PPR = Points / Races
+        if (!stats.races || stats.races === 0) return 0;
+        return (stats.totalPoints / stats.races);
     };
 
     const generateTeams = () => {
-        if (selectedPlayers.length % 2 !== 0 || selectedPlayers.length === 0) {
-            alert("Seleciona um número par de jogadores para dividir (ex: 2, 4, 6, 8).");
+        if (selectedPlayers.length % numTeams !== 0 || selectedPlayers.length === 0) {
+            alert(`Seleciona um número de jogadores divisível por ${numTeams} (ex: ${numTeams}, ${numTeams * 2}, ...).`);
             return;
         }
 
@@ -89,75 +89,69 @@ export function TeamsManager() {
         // Sort by rank descending
         selectedData.sort((a, b) => b.rank - a.rank);
 
-        // Brute force combinations for best balance
-        // We want to split selectedData into 2 teams of equal size
-        const teamSize = selectedData.length / 2;
+        // Partition Logic for N teams
+        const teamSize = selectedData.length / numTeams;
+        const teams = Array.from({ length: numTeams }, () => []);
+        const teamScores = new Array(numTeams).fill(0);
 
-        // Helper to generate combinations
-        const getCombinations = (arr, k) => {
-            const results = [];
-            const helper = (start, combo) => {
-                if (combo.length === k) {
-                    results.push([...combo]);
-                    return;
-                }
-                for (let i = start; i < arr.length; i++) {
-                    combo.push(arr[i]);
-                    helper(i + 1, combo);
-                    combo.pop();
-                }
-            };
-            helper(0, []);
-            return results;
-        };
-
-        const allCombos = getCombinations(selectedData, teamSize);
-
-        let bestTeam1 = [];
-        let minDiff = Infinity;
+        let bestSolution = null;
+        let bestDiff = Infinity;
         let minConflicts = Infinity;
 
         const totalScore = selectedData.reduce((acc, p) => acc + p.rank, 0);
-        const targetScore = totalScore / 2;
+        const targetScore = totalScore / numTeams;
 
-        allCombos.forEach(team1 => {
-            const team1Ids = new Set(team1.map(p => p.id));
-            const team2 = selectedData.filter(p => !team1Ids.has(p.id));
+        const solve = (playerIdx) => {
+            if (playerIdx === selectedData.length) {
+                let currentDiff = 0;
+                let currentConflicts = 0;
 
-            let conflicts = 0;
-            if (hasTeamRivalries(team1)) conflicts++;
-            if (hasTeamRivalries(team2)) conflicts++;
+                for (let i = 0; i < numTeams; i++) {
+                    currentDiff += Math.abs(teamScores[i] - targetScore);
+                    if (hasTeamRivalries(teams[i])) currentConflicts++;
+                }
 
-            const t1Score = team1.reduce((acc, p) => acc + p.rank, 0);
-            const diff = Math.abs(t1Score - targetScore);
+                // We prioritize minimizing conflicts, then minimizing score difference
+                if (currentConflicts < minConflicts || (currentConflicts === minConflicts && currentDiff < bestDiff)) {
+                    minConflicts = currentConflicts;
+                    bestDiff = currentDiff;
+                    bestSolution = teams.map(t => [...t]);
+                }
+                return;
+            }
 
-            if (conflicts < minConflicts) {
-                minConflicts = conflicts;
-                minDiff = diff;
-                bestTeam1 = team1;
-            } else if (conflicts === minConflicts) {
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    bestTeam1 = team1;
+            const player = selectedData[playerIdx];
+
+            for (let i = 0; i < numTeams; i++) {
+                if (teams[i].length < teamSize) {
+                    teams[i].push(player);
+                    teamScores[i] += player.rank;
+
+                    solve(playerIdx + 1);
+
+                    teamScores[i] -= player.rank;
+                    teams[i].pop();
+
+                    // Optimization: if this bucket is empty, filling it with current player is effectively same as filling next empty bucket
+                    // so we can skip next buckets to avoid permutations of empty buckets
+                    if (teams[i].length === 0) break;
                 }
             }
-        });
+        };
 
-        const finalTeam1 = bestTeam1;
-        const finalTeam1Ids = new Set(finalTeam1.map(p => p.id));
-        const finalTeam2 = selectedData.filter(p => !finalTeam1Ids.has(p.id));
+        solve(0);
 
-        const t1Score = finalTeam1.reduce((acc, p) => acc + p.rank, 0);
-        const t2Score = finalTeam2.reduce((acc, p) => acc + p.rank, 0);
-
-        setGeneratedTeams({
-            team1: finalTeam1,
-            team2: finalTeam2,
-            team1Score: t1Score.toFixed(0),
-            team2Score: t2Score.toFixed(0),
-            diff: Math.abs(t1Score - t2Score).toFixed(0),
-            conflicts: minConflicts
-        });
+        if (bestSolution) {
+            setGeneratedTeams({
+                teams: bestSolution.map((t, i) => ({
+                    id: i + 1,
+                    players: t,
+                    score: t.reduce((acc, p) => acc + p.rank, 0).toFixed(1)
+                })),
+                diff: bestDiff.toFixed(1),
+                conflicts: minConflicts
+            });
+        }
     };
 
     return (
@@ -242,100 +236,156 @@ export function TeamsManager() {
             {/* GENERATOR TAB */}
             {activeTab === 'generator' && (
                 <div className="generator-section">
-                    <div className="gta-feature-card" style={{ marginBottom: '2rem', cursor: 'default' }}>
-                        <h3>Seleção de Jogadores ({selectedPlayers.length})</h3>
-                        <p style={{ color: '#888', marginBottom: '1rem' }}>Seleciona um número par de jogadores para dividir.</p>
 
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
-                            {players.map(player => {
-                                const isSelected = selectedPlayers.includes(player.name);
-                                return (
-                                    <button
-                                        key={player.id}
-                                        onClick={() => togglePlayerSelection(player.name)}
-                                        style={{
-                                            background: isSelected ? 'var(--gta-accent)' : 'rgba(0,0,0,0.3)',
-                                            color: isSelected ? 'black' : 'var(--gta-text-primary)',
-                                            border: `1px solid ${isSelected ? 'var(--gta-accent)' : 'var(--gta-border)'}`,
-                                            padding: '0.5rem 1rem',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold',
-                                            transition: 'all 0.2s'
-                                        }}
-                                    >
-                                        {player.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                    {/* STEP 1: CONFIG */}
+                    {generatorStep === 1 && (
+                        <div className="gta-feature-card" style={{ marginBottom: '2rem', cursor: 'default' }}>
+                            <h3 style={{ marginBottom: '1.5rem' }}>Raio X da Sessão</h3>
 
-                        <div style={{ marginTop: '2rem' }}>
+                            <div style={{ marginBottom: '2rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', ccolor: '#ccc' }}>Quantas Equipas?</label>
+                                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                                    {[2, 3, 4].map(n => (
+                                        <button
+                                            key={n}
+                                            onClick={() => setNumTeams(n)}
+                                            style={{
+                                                padding: '1rem 2rem',
+                                                fontSize: '1.5rem',
+                                                background: numTeams === n ? 'var(--gta-accent)' : 'rgba(0,0,0,0.5)',
+                                                color: numTeams === n ? 'black' : 'white',
+                                                border: numTeams === n ? 'none' : '1px solid #444',
+                                                borderRadius: '8px',
+                                                cursor: 'pointer',
+                                                fontWeight: 'bold',
+                                                transition: 'all 0.2s'
+                                            }}
+                                        >
+                                            {n}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             <button
                                 className="gta-btn gta-btn-primary"
-                                onClick={generateTeams}
-                                disabled={selectedPlayers.length === 0}
+                                onClick={() => setGeneratorStep(2)}
                             >
-                                GERAR EQUIPAS EQUILIBRADAS
-                            </button>
-                            <button
-                                className="gta-btn"
-                                onClick={() => { setSelectedPlayers([]); setGeneratedTeams(null); }}
-                                style={{ marginLeft: '1rem', background: 'transparent', border: '1px solid #444' }}
-                            >
-                                LIMPAR
+                                PRÓXIMO: SELECIONAR JOGADORES
                             </button>
                         </div>
-                    </div>
+                    )}
 
-                    {generatedTeams && (
-                        <div className="generated-result">
-                            {generatedTeams.conflicts > 0 && (
-                                <div style={{
-                                    background: 'rgba(255, 0, 0, 0.2)',
-                                    border: '1px solid red',
-                                    padding: '1rem',
-                                    borderRadius: '8px',
-                                    marginBottom: '1rem',
-                                    textAlign: 'center'
-                                }}>
-                                    ⚠️ Atenção: {generatedTeams.conflicts} conflito(s) de rivalidade encontrados nestas equipas!
+                    {/* STEP 2: PLAYERS */}
+                    {generatorStep === 2 && (
+                        <>
+                            <div className="gta-feature-card" style={{ marginBottom: '2rem', cursor: 'default' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <button
+                                        onClick={() => { setGeneratorStep(1); setGeneratedTeams(null); }}
+                                        style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.2rem' }}
+                                    >
+                                        ← Voltar
+                                    </button>
+                                    <h3>Seleção de Jogadores ({selectedPlayers.length})</h3>
+                                    <div style={{ width: '60px' }}></div> {/* Spacer */}
+                                </div>
+
+                                <p style={{ color: '#888', marginBottom: '1rem' }}>
+                                    Seleciona um múltiplo de <strong style={{ color: 'white' }}>{numTeams}</strong> jogadores.
+                                </p>
+
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+                                    {players.map(player => {
+                                        const isSelected = selectedPlayers.includes(player.name);
+                                        return (
+                                            <button
+                                                key={player.id}
+                                                onClick={() => togglePlayerSelection(player.name)}
+                                                style={{
+                                                    background: isSelected ? 'var(--gta-accent)' : 'rgba(0,0,0,0.3)',
+                                                    color: isSelected ? 'black' : 'var(--gta-text-primary)',
+                                                    border: `1px solid ${isSelected ? 'var(--gta-accent)' : 'var(--gta-border)'}`,
+                                                    padding: '0.5rem 1rem',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    fontWeight: 'bold',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                {player.name}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <div style={{ marginTop: '2rem' }}>
+                                    <button
+                                        className="gta-btn gta-btn-primary"
+                                        onClick={generateTeams}
+                                        disabled={selectedPlayers.length === 0}
+                                    >
+                                        GERAR {numTeams} EQUIPAS
+                                    </button>
+                                    <button
+                                        className="gta-btn"
+                                        onClick={() => { setSelectedPlayers([]); setGeneratedTeams(null); }}
+                                        style={{ marginLeft: '1rem', background: 'transparent', border: '1px solid #444' }}
+                                    >
+                                        LIMPAR
+                                    </button>
+                                </div>
+                            </div>
+
+                            {generatedTeams && (
+                                <div className="generated-result">
+                                    {generatedTeams.conflicts > 0 && (
+                                        <div style={{
+                                            background: 'rgba(255, 0, 0, 0.2)',
+                                            border: '1px solid red',
+                                            padding: '1rem',
+                                            borderRadius: '8px',
+                                            marginBottom: '1rem',
+                                            textAlign: 'center'
+                                        }}>
+                                            ⚠️ Atenção: {generatedTeams.conflicts} conflito(s) de rivalidade encontrados!
+                                        </div>
+                                    )}
+
+                                    <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                                        <span style={{ color: '#888' }}>Desvio de "Skill" (PPR): </span>
+                                        <span style={{ color: 'var(--gta-accent)', fontWeight: 'bold' }}>{generatedTeams.diff}</span>
+                                    </div>
+
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: numTeams > 2 ? '1fr 1fr' : '1fr 1fr',
+                                        gap: '2rem',
+                                        // On mobile this might need to be stack
+                                    }}>
+                                        {generatedTeams.teams.map((team, idx) => (
+                                            <div key={team.id} className="gta-feature-card" style={{
+                                                cursor: 'default',
+                                                borderColor: idx % 2 === 0 ? 'var(--gta-accent)' : 'var(--gta-accent-secondary)',
+                                                gridColumn: (numTeams === 3 && idx === 2) ? '1 / -1' : 'auto' // Center 3rd element if 3 teams
+                                            }}>
+                                                <h3 style={{ color: idx % 2 === 0 ? 'var(--gta-accent)' : 'var(--gta-accent-secondary)' }}>
+                                                    EQUIPA {team.id}
+                                                </h3>
+                                                <div style={{ marginBottom: '1rem', fontSize: '0.9rem', color: '#666' }}>Total PPR: {team.score}</div>
+                                                <ul style={{ listStyle: 'none', padding: 0 }}>
+                                                    {team.players.map(p => (
+                                                        <li key={p.id} style={{ padding: '0.5rem', borderBottom: '1px solid #333' }}>
+                                                            {p.name}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
-
-                            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                                <span style={{ color: '#888' }}>Diferença de "Skill": </span>
-                                <span style={{ color: 'var(--gta-accent)', fontWeight: 'bold' }}>{generatedTeams.diff} pontos</span>
-                            </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                                {/* Team 1 */}
-                                <div className="gta-feature-card" style={{ cursor: 'default', borderColor: 'var(--gta-accent)' }}>
-                                    <h3 style={{ color: 'var(--gta-accent)' }}>EQUIPA 1</h3>
-                                    <div style={{ marginBottom: '1rem', fontSize: '0.9rem', color: '#666' }}>Score: {generatedTeams.team1Score}</div>
-                                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                                        {generatedTeams.team1.map(p => (
-                                            <li key={p.id} style={{ padding: '0.5rem', borderBottom: '1px solid #333' }}>
-                                                {p.name}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Team 2 */}
-                                <div className="gta-feature-card" style={{ cursor: 'default', borderColor: 'var(--gta-accent-secondary)' }}>
-                                    <h3 style={{ color: 'var(--gta-accent-secondary)' }}>EQUIPA 2</h3>
-                                    <div style={{ marginBottom: '1rem', fontSize: '0.9rem', color: '#666' }}>Score: {generatedTeams.team2Score}</div>
-                                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                                        {generatedTeams.team2.map(p => (
-                                            <li key={p.id} style={{ padding: '0.5rem', borderBottom: '1px solid #333' }}>
-                                                {p.name}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        </>
                     )}
                 </div>
             )}
