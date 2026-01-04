@@ -245,7 +245,7 @@ export function TeamsManager() {
                             <div style={{ marginBottom: '2rem' }}>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', ccolor: '#ccc' }}>Quantas Equipas?</label>
                                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                                    {[2, 3, 4].map(n => (
+                                    {[2, 3, 4, 5].map(n => (
                                         <button
                                             key={n}
                                             onClick={() => setNumTeams(n)}
@@ -367,7 +367,7 @@ export function TeamsManager() {
                                             <div key={team.id} className="gta-feature-card" style={{
                                                 cursor: 'default',
                                                 borderColor: idx % 2 === 0 ? 'var(--gta-accent)' : 'var(--gta-accent-secondary)',
-                                                gridColumn: (numTeams === 3 && idx === 2) ? '1 / -1' : 'auto' // Center 3rd element if 3 teams
+                                                gridColumn: (numTeams % 2 !== 0 && idx === numTeams - 1) ? '1 / -1' : 'auto' // Center last element if odd number of teams
                                             }}>
                                                 <h3 style={{ color: idx % 2 === 0 ? 'var(--gta-accent)' : 'var(--gta-accent-secondary)' }}>
                                                     EQUIPA {team.id}
