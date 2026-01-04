@@ -23,6 +23,7 @@ export function RaceInput({ onRaceAdded, onCancel }) {
     // Example: [{ playerId: '...', name: 'Player', races: [15, 10, 5], total: 30 }]
     const [gridData, setGridData] = useState([]);
     const [numRaces, setNumRaces] = useState(3); // Default detected or customizable
+    const [championshipName, setChampionshipName] = useState(''); // Nome do campeonato
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -93,35 +94,72 @@ export function RaceInput({ onRaceAdded, onCancel }) {
                 return;
             }
 
-            // Detect number of races from the first player
-            const detectedRaces = data[0].races ? data[0].races.length : 0;
-            if (detectedRaces === 0) {
-                alert("Dados sem corridas detectadas.");
-                setIsProcessing(false);
-                return;
-            }
-            setNumRaces(detectedRaces);
-
-            const rounds = data.map(r => {
-                // Try to find player by name matching
-                const player = availablePlayers.find(p => p.name && p.name.toLowerCase().includes(r.playerName.toLowerCase()))
-                    || { id: null, name: r.playerName };
-
-                return {
-                    playerId: player.id,
-                    playerName: player.name || r.playerName,
-                    races: r.races,
-                    color: r.color || '#a855f7',
-                    total: r.races.reduce((a, b) => a + Number(b), 0)
-                };
-            });
-
-            setGridData(rounds);
+            processJSONData(data);
         } catch (err) {
             console.error("JSON Load Error:", err);
             alert("Erro ao carregar JSON: " + err.message);
-        } finally {
             setIsProcessing(false);
+        }
+    };
+
+    const handleJSONFileUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setIsProcessing(true);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                processJSONData(data);
+            } catch (err) {
+                console.error("JSON Parse Error:", err);
+                alert("Erro ao processar arquivo JSON: " + err.message);
+                setIsProcessing(false);
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    const processJSONData = (data) => {
+        if (!data || data.length === 0) {
+            alert("Nenhum dado encontrado no JSON");
+            setIsProcessing(false);
+            return;
+        }
+
+        // Detect number of races from the first player
+        const detectedRaces = data[0].races ? data[0].races.length : 0;
+        if (detectedRaces === 0) {
+            alert("Dados sem corridas detectadas.");
+            setIsProcessing(false);
+            return;
+        }
+        setNumRaces(detectedRaces);
+
+        const rounds = data.map(r => {
+            // Try to find player by name matching
+            const player = availablePlayers.find(p => p.name && p.name.toLowerCase().includes(r.playerName.toLowerCase()))
+                || { id: null, name: r.playerName };
+
+            return {
+                playerId: player.id,
+                playerName: player.name || r.playerName,
+                races: r.races,
+                color: r.color || '#a855f7',
+                total: r.races.reduce((a, b) => a + Number(b), 0)
+            };
+        });
+
+        setGridData(rounds);
+        setIsProcessing(false);
+    };
+
+    const handleClearData = () => {
+        if (window.confirm("Tens a certeza que queres limpar todos os dados?")) {
+            setGridData([]);
+            setChampionshipName('');
+            setNumRaces(3);
         }
     };
 
@@ -151,29 +189,38 @@ export function RaceInput({ onRaceAdded, onCancel }) {
 
             // 2. Playlist
             const dateStr = new Date().toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            const playlistName = `Campeonato ${dateStr}`;
+            const playlistName = championshipName.trim() || `Campeonato ${dateStr}`;
             const playlistDoc = await gtaService.createPlaylist(playlistName);
             const playlistId = playlistDoc.id;
 
             // 3. Add Races
             for (let i = 0; i < numRaces; i++) {
                 const raceResults = updatedGridData.map(row => {
+                    const points = Number(row.races[i]) || 0;
                     return {
                         playerId: row.playerId,
                         playerName: row.playerName,
-                        points: row.races[i] || 0,
+                        points: points,
                         teamColor: row.color // Extract color from grid row
                     };
                 });
                 raceResults.sort((a, b) => Number(b.points) - Number(a.points));
 
-                const resultsWithPos = raceResults.map((r, idx) => ({
-                    playerId: r.playerId,
-                    playerName: r.playerName,
-                    points: Number(r.points),
-                    position: idx + 1,
-                    teamColor: r.teamColor // Include Color
-                }));
+                const resultsWithPos = raceResults.map((r, idx) => {
+                    const points = Number(r.points) || 0;
+                    return {
+                        playerId: r.playerId,
+                        playerName: r.playerName,
+                        points: points,
+                        position: idx + 1,
+                        teamColor: r.teamColor // Include Color
+                    };
+                });
+
+                // Debug log for first race
+                if (i === 0) {
+                    console.log('Saving race data:', resultsWithPos);
+                }
 
                 await gtaService.addRace(playlistId, `Corrida ${i + 1}`, resultsWithPos);
             }
@@ -214,13 +261,41 @@ export function RaceInput({ onRaceAdded, onCancel }) {
                         {isProcessing ? "PROCESSANDO..." : "📸 CARREGAR FOTO"}
                         <input type="file" onChange={handleImageUpload} hidden accept="image/*" />
                     </label>
+                    <label className="gta-btn" style={{ marginTop: '1rem', display: 'block', cursor: 'pointer' }}>
+                        📄 CARREGAR ARQUIVO JSON
+                        <input type="file" onChange={handleJSONFileUpload} hidden accept=".json" />
+                    </label>
                     <button className="gta-btn" onClick={loadFromJSON} style={{ marginTop: '1rem' }}>
-                        📥 CARREGAR DADOS PENDENTES
+                        📥 CARREGAR DADOS PENDENTES (pending_races.json)
                     </button>
                 </div>
             ) : (
                 <div className="preview-table-container">
+                    <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff', fontSize: '0.9rem' }}>
+                            Nome do Campeonato:
+                        </label>
+                        <input
+                            type="text"
+                            value={championshipName}
+                            onChange={(e) => setChampionshipName(e.target.value)}
+                            placeholder="Ex: Jamais, Temporada 2025, etc."
+                            className="gta-input-clean"
+                            style={{
+                                width: '100%',
+                                padding: '0.5rem',
+                                fontSize: '1rem',
+                                background: 'rgba(0,0,0,0.5)',
+                                border: '1px solid #444',
+                                borderRadius: '4px',
+                                color: '#fff'
+                            }}
+                        />
+                    </div>
                     <h3>Resultados Detectados</h3>
+                    <p style={{ color: '#aaa', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                        💡 Podes editar os pontos diretamente na tabela. O total é calculado automaticamente.
+                    </p>
                     <div className="table-wrapper">
                         <table className="gta-table detection-table">
                             <thead>
@@ -278,7 +353,29 @@ export function RaceInput({ onRaceAdded, onCancel }) {
                                         </td>
                                         {row.races.map((points, rIdx) => (
                                             <td key={rIdx} className="text-center point-cell">
-                                                {points}
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    value={points}
+                                                    onChange={(e) => {
+                                                        const newData = [...gridData];
+                                                        const newPoints = parseInt(e.target.value) || 0;
+                                                        newData[idx].races[rIdx] = newPoints;
+                                                        newData[idx].total = newData[idx].races.reduce((a, b) => Number(a) + Number(b), 0);
+                                                        setGridData(newData);
+                                                    }}
+                                                    className="gta-input-clean"
+                                                    style={{
+                                                        width: '50px',
+                                                        textAlign: 'center',
+                                                        background: 'rgba(0,0,0,0.5)',
+                                                        border: '1px solid #444',
+                                                        borderRadius: '4px',
+                                                        padding: '2px',
+                                                        fontSize: '0.9rem',
+                                                        color: '#fff'
+                                                    }}
+                                                />
                                             </td>
                                         ))}
                                         <td className="text-center total-cell">
@@ -291,6 +388,9 @@ export function RaceInput({ onRaceAdded, onCancel }) {
                     </div>
 
                     <div className="action-footer">
+                        <button className="gta-btn" onClick={handleClearData} disabled={isSaving} style={{ marginRight: 'auto' }}>
+                            🗑️ LIMPAR
+                        </button>
                         <button className="gta-btn" onClick={onCancel} disabled={isSaving}>CANCELAR</button>
                         <button className="gta-btn gta-btn-primary" onClick={handleSaveEvent} disabled={isSaving}>
                             {isSaving ? "SALVANDO..." : `CONFIRMAR E SALVAR (${numRaces} Corridas)`}

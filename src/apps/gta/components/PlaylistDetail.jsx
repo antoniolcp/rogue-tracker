@@ -49,6 +49,10 @@ export function PlaylistDetail({ playlist, onBack }) {
                 }
 
                 const pts = Number(res.points) || 0;
+                // Ensure we're using the correct points value
+                if (isNaN(pts)) {
+                    console.warn(`Invalid points for player ${res.playerName} in race ${rIdx}:`, res.points);
+                }
                 statsMap[res.playerId].races[rIdx] = pts;
                 statsMap[res.playerId].total += pts;
             });
