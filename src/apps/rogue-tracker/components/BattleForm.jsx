@@ -77,7 +77,7 @@ const BattleForm = ({ onClose }) => {
 
   const maps = [
     'High Castle', 'Skyfell', 'Vice', 'Wanted', 'Windward',
-    'Lockdown', 'Canals', 'Icarus', 'The Arena', 'Breach', 'Favela', 'Factory', 'Glacier', 'Palace', 'Hollows', 'Canals 2'
+    'Lockdown', 'Canals', 'Icarus', 'The Arena', 'Breach', 'Favela', 'Factory', 'Glacier', 'Palace', 'Hollows', 'Canals 2', 'Meltdown', 'Unknown'
   ];
 
   const operators = [
@@ -197,21 +197,21 @@ const BattleForm = ({ onClose }) => {
     // Dados reais do POST MATCH REPORT - SCOREBOARD (VICTORY para Team 2 - Azul, DEFEAT para Team 1 - Roxo)
     const baseTime = Date.now();
     const sampleData = {
-      map: 'Unknown', // Mapa não especificado no relatório
-      team1: [ // Losers (Team 2 in screenshot - Blue)
-        { id: `player_${baseTime}_1`, name: 'BARROSA10', operator: 'Unknown', elims: 35, downs: 24, assists: 9, revives: 5, damage: 4835, captures: 6 },
-        { id: `player_${baseTime + 1}_2`, name: 'Andre_santinho', operator: 'Unknown', elims: 30, downs: 20, assists: 6, revives: 0, damage: 3975, captures: 9 },
-        { id: `player_${baseTime + 2}_3`, name: 'martim1087', operator: 'Unknown', elims: 29, downs: 21, assists: 9, revives: 0, damage: 3902, captures: 5 },
-        { id: `player_${baseTime + 3}_4`, name: 'antoniolamycp9', operator: 'Unknown', elims: 25, downs: 19, assists: 10, revives: 1, damage: 4362, captures: 2 }
+      map: 'Unknown',
+      team1: [ // Winners (Team 3 in screenshot - 3 Rounds)
+        { id: `player_${baseTime}_1`, name: 'Gametti', operator: 'Unknown', elims: 39, downs: 22, assists: 17, revives: 5, damage: 3963, captures: 3 },
+        { id: `player_${baseTime + 1}_2`, name: 'BARROSA10', operator: 'Unknown', elims: 33, downs: 24, assists: 9, revives: 4, damage: 4362, captures: 8 },
+        { id: `player_${baseTime + 2}_3`, name: 'miguel_paisana', operator: 'Unknown', elims: 28, downs: 19, assists: 10, revives: 2, damage: 3779, captures: 4 },
+        { id: `player_${baseTime + 3}_4`, name: 'pedro_jl76', operator: 'Unknown', elims: 20, downs: 8, assists: 11, revives: 3, damage: 1525, captures: 6 }
       ],
-      team2: [ // Winners (Team 3 in screenshot - Purple)
-        { id: `player_${baseTime + 4}_5`, name: 'Gametti', operator: 'Unknown', elims: 47, downs: 38, assists: 8, revives: 0, damage: 6827, captures: 8 },
-        { id: `player_${baseTime + 5}_6`, name: 'miguel_paisana', operator: 'Unknown', elims: 32, downs: 12, assists: 18, revives: 2, damage: 3552, captures: 4 },
-        { id: `player_${baseTime + 6}_7`, name: 'wrrqvy', operator: 'Unknown', elims: 30, downs: 24, assists: 7, revives: 2, damage: 3688, captures: 7 },
-        { id: `player_${baseTime + 7}_8`, name: 'fifagomesg-19', operator: 'Unknown', elims: 26, downs: 15, assists: 10, revives: 2, damage: 3128, captures: 2 }
+      team2: [ // Losers (Team 1 in screenshot - 1 Round)
+        { id: `player_${baseTime + 4}_5`, name: 'fifagomesg-19', operator: 'Unknown', elims: 27, downs: 16, assists: 11, revives: 1, damage: 3698, captures: 5 },
+        { id: `player_${baseTime + 5}_6`, name: 'antoniolamycp9', operator: 'Unknown', elims: 27, downs: 19, assists: 9, revives: 3, damage: 4217, captures: 3 },
+        { id: `player_${baseTime + 6}_7`, name: 'martim1087', operator: 'Unknown', elims: 21, downs: 14, assists: 11, revives: 1, damage: 3509, captures: 3 },
+        { id: `player_${baseTime + 7}_8`, name: 'wrrqvy', operator: 'Unknown', elims: 14, downs: 16, assists: 3, revives: 2, damage: 2174, captures: 1 }
       ],
-      team1Rounds: 2, // Team 2 (Perdedora)
-      team2Rounds: 3  // Team 3 (Vencedora)
+      team1Rounds: 3,
+      team2Rounds: 1
     };
 
     // Preencher operadores favoritos automaticamente
@@ -308,9 +308,9 @@ const BattleForm = ({ onClose }) => {
             <button
               type="button"
               className="mode-toggle-btn"
-              onClick={() => setShowImportMode(!showImportMode)}
+              onClick={processImportData}
             >
-              {showImportMode ? 'Modo Manual' : 'Importar Screenshot'}
+              Importar Screenshot
             </button>
             <button className="close-btn" onClick={onClose}>×</button>
           </div>
