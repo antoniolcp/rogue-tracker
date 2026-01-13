@@ -122,5 +122,64 @@ export const gtaService = {
         localStorage.removeItem('gta_hub_rivalries');
 
         return true;
+    },
+
+    async mergePlayers(keepName, removeName) {
+        console.log(`Starting merge: keep ${keepName}, remove ${removeName}`);
+
+        // 1. Get both players
+        const playersRefQuery = await getDocs(playersRef);
+        const allPlayers = playersRefQuery.docs.map(d => ({ ...d.data(), id: d.id, ref: d.ref }));
+
+        const keepPlayer = allPlayers.find(p => p.name === keepName);
+        const removePlayer = allPlayers.find(p => p.name === removeName);
+
+        if (!keepPlayer || !removePlayer) {
+            console.error('One or both players not found');
+            return false;
+        }
+
+        console.log('Found players:', keepPlayer, removePlayer);
+
+        // 2. Find all races where removePlayer participated
+        const racesSnap = await getDocs(racesRef);
+        let updatedRacesCount = 0;
+
+        const raceUpdatePromises = racesSnap.docs.map(async (raceDoc) => {
+            const raceData = raceDoc.data();
+            let changed = false;
+
+            const newResults = raceData.results.map(res => {
+                if (res.playerId === removePlayer.id) {
+                    changed = true;
+                    return { ...res, playerId: keepPlayer.id };
+                }
+                return res;
+            });
+
+            if (changed) {
+                updatedRacesCount++;
+                return updateDoc(raceDoc.ref, { results: newResults });
+            }
+        });
+
+        await Promise.all(raceUpdatePromises);
+        console.log(`Updated ${updatedRacesCount} races`);
+
+        // 3. Update keepPlayer stats
+        const newStats = {
+            wins: (keepPlayer.stats?.wins || 0) + (removePlayer.stats?.wins || 0),
+            totalPoints: (keepPlayer.stats?.totalPoints || 0) + (removePlayer.stats?.totalPoints || 0),
+            races: (keepPlayer.stats?.races || 0) + (removePlayer.stats?.races || 0)
+        };
+
+        await updateDoc(keepPlayer.ref, { stats: newStats });
+        console.log('Updated stats for keepPlayer');
+
+        // 4. Delete removePlayer
+        await deleteDoc(removePlayer.ref);
+        console.log('Deleted removePlayer');
+
+        return true;
     }
 };

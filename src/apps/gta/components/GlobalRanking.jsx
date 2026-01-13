@@ -211,7 +211,6 @@ export function GlobalRanking() {
         <div className="global-ranking">
             <div className="ranking-header">
                 <h2>RANKING GLOBAL</h2>
-
                 <div className="gta-hero-buttons" style={{ justifyContent: 'flex-start', gap: '0.8rem', flexWrap: 'wrap' }}>
                     <button
                         className={`gta-btn ${activeTab === 'total' ? 'gta-btn-primary' : ''}`}
