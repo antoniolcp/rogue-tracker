@@ -2,161 +2,121 @@
   {
     "playerName": "juveleo1979",
     "races": [
-      7,
-      4,
+      15,
+      15,
+      6,
       8,
-      0,
-      7,
-      15,
-      13,
-      12,
-      15,
-      3,
-      10
+      8,
+      6,
+      8,
+      16,
+      5,
+      6
     ]
   },
   {
-    "playerName": "miguel_paisana",
+    "playerName": "fifagomesg-19",
     "races": [
-      6,
+      12,
+      8,
+      4,
       15,
       6,
-      0,
-      3,
-      12,
-      12,
+      4,
       13,
-      9,
-      11,
+      12,
+      8,
+      6
+    ]
+  },
+  {
+    "playerName": "franciscomrfe",
+    "races": [
+      10,
+      10,
+      12,
+      5,
+      12,
+      15,
+      12,
+      12,
+      6,
       8
     ]
   },
   {
     "playerName": "Benny_Fuego",
     "races": [
-      12,
-      10,
-      2,
-      0,
-      12,
+      8,
       7,
-      8,
       15,
-      10,
-      12,
-      12
-    ]
-  },
-  {
-    "playerName": "Duarte_Sogalho",
-    "races": [
-      8,
-      8,
-      10,
-      0,
-      5,
-      8,
+      7,
+      15,
+      7,
       11,
-      12,
-      12,
-      4,
-      5
-    ]
-  },
-  {
-    "playerName": "Andre_santinho",
-    "races": [
-      3,
-      3,
       15,
-      0,
-      6,
-      3,
-      16,
-      16,
-      6,
-      8,
-      16
-    ]
-  },
-  {
-    "playerName": "franciscomrfe",
-    "races": [
-      15,
-      2,
-      7,
-      0,
-      10,
-      6,
       12,
-      12,
-      6,
-      8,
-      0
-    ]
-  },
-  {
-    "playerName": "martim1087",
-    "races": [
-      5,
-      5,
-      5,
-      0,
-      4,
-      10,
-      8,
-      15,
-      0,
-      15,
-      0
+      7
     ]
   },
   {
     "playerName": "BARROSA10",
     "races": [
-      4,
-      12,
-      3,
-      0,
+      7,
+      5,
       8,
-      2,
+      12,
+      10,
+      5,
+      15,
+      15,
+      5,
+      10
+    ]
+  },
+  {
+    "playerName": "Duarte_Sogalho",
+    "races": [
+      5,
+      6,
+      10,
+      10,
+      7,
+      12,
+      16,
+      13,
+      11,
+      13
+    ]
+  },
+  {
+    "playerName": "Andre_santinho",
+    "races": [
+      6,
+      12,
+      7,
+      4,
+      4,
+      10,
+      10,
+      15,
+      15,
+      4
+    ]
+  },
+  {
+    "playerName": "pedro__jl76",
+    "races": [
+      4,
+      4,
+      5,
+      6,
+      5,
+      8,
       9,
       12,
-      0,
-      0,
-      0
-    ]
-  },
-  {
-    "playerName": "fifagomesg-19",
-    "races": [
-      2,
       7,
-      4,
-      0,
-      0,
-      5,
-      15,
-      15,
-      0,
-      6,
-      0
-    ]
-  },
-  {
-    "playerName": "antoniolamycp9",
-    "races": [
-      10,
-      6,
-      12,
-      0,
-      15,
-      4,
-      10,
-      15,
-      7,
-      5,
-      6
+      15
     ]
   }
 ]

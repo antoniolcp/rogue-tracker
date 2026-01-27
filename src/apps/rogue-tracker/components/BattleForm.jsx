@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { addBattle, getBattles } from '../firebase/battles';
 import { processBattleResults, getPlayers } from '../firebase/players';
+import { recognizeImage } from '../utils/ocrService';
+import { migratePlayerName } from '../firebase/migration';
+import pendingBattlesData from '../data/pending_battles.json';
 import './BattleForm.css';
 
 const BattleForm = ({ onClose }) => {
@@ -15,6 +18,9 @@ const BattleForm = ({ onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showImportMode, setShowImportMode] = useState(false);
   const [playerFavoriteOperators, setPlayerFavoriteOperators] = useState({});
+  const [pendingBattles, setPendingBattles] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [allPlayers, setAllPlayers] = useState([]);
 
   // Carregar operadores favoritos dos jogadores
   useEffect(() => {
@@ -22,6 +28,7 @@ const BattleForm = ({ onClose }) => {
       try {
         const battles = await getBattles();
         const players = await getPlayers();
+        setAllPlayers(players);
 
         // Criar mapa de operadores por jogador
         const operatorCount = {};
@@ -41,6 +48,8 @@ const BattleForm = ({ onClose }) => {
         battles.forEach(battle => {
           const allPlayers = [...(battle.team1 || []), ...(battle.team2 || [])];
           allPlayers.forEach(player => {
+            if (!player || !player.name) return;
+
             if (player.operator && player.operator !== 'Unknown' && player.operator.trim() !== '') {
               if (!operatorCount[player.name]) {
                 operatorCount[player.name] = {};
@@ -54,7 +63,10 @@ const BattleForm = ({ onClose }) => {
         const favorites = {};
         Object.keys(operatorCount).forEach(playerName => {
           const operators = operatorCount[playerName];
-          const mostUsed = Object.keys(operators).reduce((a, b) =>
+          const opKeys = Object.keys(operators);
+          if (opKeys.length === 0) return;
+
+          const mostUsed = opKeys.reduce((a, b) =>
             operators[a] > operators[b] ? a : b
           );
           favorites[playerName] = mostUsed;
@@ -117,7 +129,7 @@ const BattleForm = ({ onClose }) => {
     }
 
     const newPlayer = {
-      id: `player_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // ID único para cada jogador individual
+      id: `player_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`, // ID único para cada jogador individual
       name: playerName.trim(),
       operator: '',
       elims: 0,
@@ -192,75 +204,9 @@ const BattleForm = ({ onClose }) => {
     return null;
   };
 
-  const processImportData = () => {
-    console.log('🚀 Botão clicado! A processar dados da partida real...');
-    // Dados reais do POST MATCH REPORT - SCOREBOARD (VICTORY para Team 2 - Azul, DEFEAT para Team 1 - Roxo)
-    const baseTime = Date.now();
-    const sampleData = {
-      map: 'Unknown',
-      team1: [ // Winners (Team 3 in screenshot - 3 Rounds)
-        { id: `player_${baseTime}_1`, name: 'Gametti', operator: 'Unknown', elims: 39, downs: 22, assists: 17, revives: 5, damage: 3963, captures: 3 },
-        { id: `player_${baseTime + 1}_2`, name: 'BARROSA10', operator: 'Unknown', elims: 33, downs: 24, assists: 9, revives: 4, damage: 4362, captures: 8 },
-        { id: `player_${baseTime + 2}_3`, name: 'miguel_paisana', operator: 'Unknown', elims: 28, downs: 19, assists: 10, revives: 2, damage: 3779, captures: 4 },
-        { id: `player_${baseTime + 3}_4`, name: 'pedro_jl76', operator: 'Unknown', elims: 20, downs: 8, assists: 11, revives: 3, damage: 1525, captures: 6 }
-      ],
-      team2: [ // Losers (Team 1 in screenshot - 1 Round)
-        { id: `player_${baseTime + 4}_5`, name: 'fifagomesg-19', operator: 'Unknown', elims: 27, downs: 16, assists: 11, revives: 1, damage: 3698, captures: 5 },
-        { id: `player_${baseTime + 5}_6`, name: 'antoniolamycp9', operator: 'Unknown', elims: 27, downs: 19, assists: 9, revives: 3, damage: 4217, captures: 3 },
-        { id: `player_${baseTime + 6}_7`, name: 'martim1087', operator: 'Unknown', elims: 21, downs: 14, assists: 11, revives: 1, damage: 3509, captures: 3 },
-        { id: `player_${baseTime + 7}_8`, name: 'wrrqvy', operator: 'Unknown', elims: 14, downs: 16, assists: 3, revives: 2, damage: 2174, captures: 1 }
-      ],
-      team1Rounds: 3,
-      team2Rounds: 1
-    };
 
-    // Preencher operadores favoritos automaticamente
-    const team1WithOperators = sampleData.team1.map(player => {
-      const favoriteOp = playerFavoriteOperators[player.name];
-      return {
-        ...player,
-        operator: favoriteOp || '' // Usar operador favorito se existir, senão deixar vazio
-      };
-    });
 
-    const team2WithOperators = sampleData.team2.map(player => {
-      const favoriteOp = playerFavoriteOperators[player.name];
-      return {
-        ...player,
-        operator: favoriteOp || '' // Usar operador favorito se existir, senão deixar vazio
-      };
-    });
-
-    console.log('📥 Carregando dados de exemplo com IDs únicos:');
-    console.log('Team1:', team1WithOperators.map(p => ({ id: p.id, name: p.name, operator: p.operator })));
-    console.log('Team2:', team2WithOperators.map(p => ({ id: p.id, name: p.name, operator: p.operator })));
-
-    console.log('📝 A atualizar formData...');
-    setFormData(prev => {
-      const newData = {
-        ...prev,
-        map: sampleData.map,
-        team1: team1WithOperators,
-        team2: team2WithOperators,
-        team1Rounds: sampleData.team1Rounds,
-        team2Rounds: sampleData.team2Rounds
-      };
-      console.log('✅ FormData atualizado:', newData);
-      return newData;
-    });
-
-    console.log('🔄 A mudar para modo manual...');
-    setShowImportMode(false);
-
-    const filledCount = [...team1WithOperators, ...team2WithOperators].filter(p => p.operator).length;
-    if (filledCount > 0) {
-      alert(`Dados carregados! ${filledCount} operador(es) preenchido(s) automaticamente com base no histórico. Podes editar conforme necessário.`);
-    } else {
-      alert('Dados carregados! Podes editar os nomes, operadores e estatísticas conforme necessário.');
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, isBatch = false) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -290,7 +236,22 @@ const BattleForm = ({ onClose }) => {
       // Processar e atualizar estatísticas dos jogadores
       await processBattleResults(battleData);
 
-      onClose();
+      if (isBatch && pendingBattles.length > 0) {
+        // Mark as processed in LocalStorage
+        const currentBattle = pendingBattles[0];
+        if (currentBattle._signature) {
+          const processed = JSON.parse(localStorage.getItem('rogue_processed_battles') || '[]');
+          if (!processed.includes(currentBattle._signature)) {
+            processed.push(currentBattle._signature);
+            localStorage.setItem('rogue_processed_battles', JSON.stringify(processed));
+          }
+        }
+
+        // If in batch mode and more battles exist, load next
+        handleNextBattle();
+      } else {
+        onClose();
+      }
     } catch (error) {
       console.error('Erro ao adicionar batalha:', error);
       alert('Erro ao adicionar batalha. Tenta novamente.');
@@ -299,19 +260,231 @@ const BattleForm = ({ onClose }) => {
     }
   };
 
+  /* 
+   * BATCH UPLOAD IMPORT LOGIC 
+   */
+
+  const loadBattleIntoForm = useCallback((battleData) => {
+    // Enrich with favorites logic (moved from old processImportData)
+    const enrichTeam = (team) => team.map(player => ({
+      ...player,
+      id: player.id || `player_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+      operator: player.operator && player.operator !== 'Unknown'
+        ? player.operator
+        : (playerFavoriteOperators[player.name] || '')
+    }));
+
+    setFormData({
+      map: battleData.map,
+      team1: enrichTeam(battleData.team1),
+      team2: enrichTeam(battleData.team2),
+      team1Rounds: battleData.team1Rounds || 0,
+      team2Rounds: battleData.team2Rounds || 0
+    });
+  }, [playerFavoriteOperators]);
+
+  // Using useCallback to key dependencies for useEffect
+  const processFiles = useCallback(async (files) => {
+    if (files.length === 0) return;
+
+    setIsProcessing(true);
+    const results = [];
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log(`Processing file ${i + 1}/${files.length}...`);
+
+        // Call OCR Service
+        // Pass known players for fuzzy matching
+        const knownNames = allPlayers.map(p => p.name);
+        const data = await recognizeImage(file, knownNames);
+
+        // Enrich with favorites if possible (reusing logic later)
+        results.push({
+          ...data,
+          originalFile: file.name
+        });
+      }
+
+      console.log('Processed battles:', results);
+
+      if (results.length > 0) {
+        setPendingBattles(prev => [...prev, ...results]);
+        // If we were empty, load the first one. If we already had pending, just append.
+        if (pendingBattles.length === 0) {
+          loadBattleIntoForm(results[0]);
+          setShowImportMode(false); // Go to edit mode
+        }
+      }
+    } catch (error) {
+      console.error('Batch upload error:', error);
+      alert('Erro ao processar as imagens. ' + error.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [pendingBattles, loadBattleIntoForm, setShowImportMode, setIsProcessing, setPendingBattles, allPlayers]);
+
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    await processFiles(files);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const imageFiles = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+      if (imageFiles.length > 0) {
+        await processFiles(imageFiles);
+      } else {
+        alert('Por favor, arrasta apenas ficheiros de imagem.');
+      }
+    }
+  };
+
+  // Paste listener for the whole window when in import mode
+  useEffect(() => {
+    const handlePaste = async (e) => {
+      if (!showImportMode) return;
+
+      const items = e.clipboardData.items;
+      const imageFiles = [];
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) imageFiles.push(file);
+        }
+      }
+
+      if (imageFiles.length > 0) {
+        // Create dummy names for pasted files
+        const filesWithNames = imageFiles.map((f) => {
+          // Paste usually gives 'image.png' or similar. We can just use it.
+          return f;
+        });
+        await processFiles(filesWithNames);
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => {
+      window.removeEventListener('paste', handlePaste);
+    };
+  }, [showImportMode, pendingBattles, processFiles]); // Re-bind if mode changes
+
+
+
+  const handleNextBattle = () => {
+    // Remove current battle from pending
+    const remaining = pendingBattles.slice(1);
+    setPendingBattles(remaining);
+
+    if (remaining.length > 0) {
+      loadBattleIntoForm(remaining[0]);
+    } else {
+      // All done
+      onClose();
+    }
+  };
+
+  // Custom submit handler for batch mode
+  const handleBatchSubmit = async (e) => {
+    e.preventDefault();
+    await handleSubmit(e, true); // Pass true to indicate "don't close yet"
+  };
+
+  const getBattleSignature = (battle) => {
+    // Create a unique string based on content
+    const t1 = battle.team1 && battle.team1[0] ? battle.team1[0].name : '';
+    const score = `${battle.team1Rounds}-${battle.team2Rounds}`;
+    const map = battle.map || 'Unknown';
+    // Use JSON.stringify of simplified object to avoid minor differences
+    return `SIG_${map}_${t1}_${score}`;
+  };
+
+  const handleLoadPendingJson = () => {
+    if (pendingBattlesData && pendingBattlesData.length > 0) {
+      console.log('📂 Loading pending battles from JSON:', pendingBattlesData);
+
+      const processedSignatures = JSON.parse(localStorage.getItem('rogue_processed_battles') || '[]');
+
+      const results = [];
+      let skipped = 0;
+
+      pendingBattlesData.forEach((battle, index) => {
+        const sig = getBattleSignature(battle);
+        if (processedSignatures.includes(sig)) {
+          skipped++;
+          return;
+        }
+
+        results.push({
+          ...battle,
+          _signature: sig, // Store for later
+          originalFile: battle.originalFile || `JSONItem_${index + 1}`
+        });
+      });
+
+      if (results.length === 0) {
+        if (skipped > 0) {
+          alert(`Todas as ${skipped} batalhas do ficheiro já foram processadas anteriormente!`);
+        } else {
+          alert('O ficheiro JSON no código está vazio ([]).');
+        }
+        return;
+      }
+
+      setPendingBattles(prev => [...prev, ...results]);
+
+      // Load the first one immediately
+      if (pendingBattles.length === 0 && results.length > 0) {
+        loadBattleIntoForm(results[0]);
+        setShowImportMode(false);
+      }
+
+      alert(`${results.length} novas batalhas carregadas! (${skipped} ignoradas por já terem sido feitas)`);
+    } else {
+      alert('O ficheiro JSON no código está vazio ([]).');
+    }
+  };
+
   return (
     <div className="battle-form-overlay">
       <div className="battle-form-container">
         <div className="battle-form-header">
-          <h2>Adicionar Batalha</h2>
+          <h2>
+            {pendingBattles.length > 0
+              ? `Validar Batalhas (${pendingBattles.length} restante${pendingBattles.length > 1 ? 's' : ''})`
+              : 'Adicionar Batalha'}
+          </h2>
           <div className="header-controls">
-            <button
-              type="button"
-              className="mode-toggle-btn"
-              onClick={processImportData}
-            >
-              Importar Screenshot
-            </button>
+            {pendingBattles.length === 0 && (
+              <>
+                <button
+                  type="button"
+                  className="mode-toggle-btn"
+                  onClick={handleLoadPendingJson}
+                  style={{ marginRight: '10px', backgroundColor: '#2c3e50' }}
+                >
+                  📥 Carregar JSON
+                </button>
+                <button
+                  type="button"
+                  className="mode-toggle-btn"
+                  onClick={() => setShowImportMode(!showImportMode)}
+                >
+                  {showImportMode ? 'Voltar ao Manual' : 'Importar (Img)'}
+                </button>
+              </>
+            )}
             <button className="close-btn" onClick={onClose}>×</button>
           </div>
         </div>
@@ -319,54 +492,38 @@ const BattleForm = ({ onClose }) => {
         {showImportMode ? (
           <div className="import-mode">
             <div className="import-instructions">
-              <h3>📸 Importar Screenshot do Rogue Company</h3>
-              <p>Envia-me uma imagem do scoreboard e eu preencho automaticamente!</p>
+              <h3>📸 Importar Screenshots (Batch)</h3>
+              <p>Carrega várias imagens de uma vez. O sistema vai tentar ler os dados.</p>
 
-              <div className="sample-data">
-                <h4>Dados da partida real (POST MATCH REPORT - SCOREBOARD):</h4>
-                <div className="sample-teams">
-                  <div className="sample-team">
-                    <strong>Team 3 (Vencedora - Roxo):</strong>
-                    <ul>
-                      <li><strong>Gametti</strong>: 47 elims, 38 downs, 8 assists, 0 revives, 6827 damage, 8 captures</li>
-                      <li>miguel_paisana: 32 elims, 12 downs, 18 assists, 2 revives, 3552 damage, 4 captures</li>
-                      <li>wrrqvy: 30 elims, 24 downs, 7 assists, 2 revives, 3688 damage, 7 captures</li>
-                      <li>fifagomesg-19: 26 elims, 15 downs, 10 assists, 2 revives, 3128 damage, 2 captures</li>
-                    </ul>
-                  </div>
-                  <div className="sample-team">
-                    <strong>Team 2 (Perdedora - Azul):</strong>
-                    <ul>
-                      <li>BARROSA10: 35 elims, 24 downs, 9 assists, 5 revives, 4835 damage, 6 captures</li>
-                      <li>Andre_santinho: 30 elims, 20 downs, 6 assists, 0 revives, 3975 damage, 9 captures</li>
-                      <li>martim1087: 29 elims, 21 downs, 9 assists, 0 revives, 3902 damage, 5 captures</li>
-                      <li>antoniolamycp9: 25 elims, 19 downs, 10 assists, 1 revives, 4362 damage, 2 captures</li>
-                    </ul>
-                  </div>
+              {isProcessing ? (
+                <div className="processing-indicator">
+                  <div className="spinner"></div>
+                  <p>A processar imagens com IA... Aguarda.</p>
                 </div>
-                <div className="match-info">
-                  <p><strong>Match ID:</strong> Latest</p>
-                  <p><strong>Match Result:</strong> Team 3 VICTORY (3) / Team 2 DEFEAT (2)</p>
-                  <p><strong>Resultado:</strong> Team 2 VICTORY</p>
-                </div>
-              </div>
-
-              <div className="import-actions">
-                <button
-                  type="button"
-                  className="import-sample-btn"
-                  onClick={processImportData}
+              ) : (
+                <div
+                  className="upload-area"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
                 >
-                  🎮 Usar Dados do POST MATCH REPORT (Team 2 Win)
-                </button>
-                <p className="import-note">
-                  <em>Dados extraídos do último report (3-0)</em>
-                </p>
-              </div>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="file-input-large"
+                    id="batch-upload-input"
+                  />
+                  <label htmlFor="batch-upload-input" className="upload-label">
+                    <span className="icon">📂</span>
+                    <span>Clica, Arrasta ou Cola (Ctrl+V) aqui</span>
+                  </label>
+                </div>
+              )}
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="battle-form">
+          <form onSubmit={pendingBattles.length > 0 ? handleBatchSubmit : handleSubmit} className="battle-form">
             <div className="form-row">
               <div className="form-group">
                 <label>Mapa</label>
@@ -382,6 +539,15 @@ const BattleForm = ({ onClose }) => {
                   ))}
                 </select>
               </div>
+
+              {pendingBattles.length > 0 && (
+                <div className="batch-info">
+                  <span className="badge">Fila: {pendingBattles.length}</span>
+                  {pendingBattles[0].originalFile && (
+                    <span className="filename">Ficheiro: {pendingBattles[0].originalFile}</span>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="teams-section">
@@ -694,8 +860,26 @@ const BattleForm = ({ onClose }) => {
               <button type="button" onClick={onClose} className="btn-cancel">
                 Cancelar
               </button>
+
+              {/* TEMP MIGRATION BUTTON */}
+              <button
+                type="button"
+                onClick={async () => {
+                  if (window.confirm("Renomear 'wrrqvy' para 'DiogoFrancxssco' em TODA a base de dados?")) {
+                    alert("A processar... Verifica a consola (F12) para detalhes.");
+                    const res = await migratePlayerName('wrrqvy', 'DiogoFrancxssco');
+                    alert(res);
+                  }
+                }}
+                style={{ backgroundColor: '#4a4a4a', color: '#aaa', fontSize: '0.8rem', padding: '0 10px', border: '1px solid #666', borderRadius: '4px' }}
+              >
+                🔄 Fix Names
+              </button>
+
               <button type="submit" className="btn-submit" disabled={isSubmitting}>
-                {isSubmitting ? 'A adicionar...' : 'Adicionar Batalha'}
+                {isSubmitting
+                  ? 'A guardar...'
+                  : (pendingBattles.length > 1 ? 'Guardar & Próximo' : 'Adicionar Batalha')}
               </button>
             </div>
           </form>

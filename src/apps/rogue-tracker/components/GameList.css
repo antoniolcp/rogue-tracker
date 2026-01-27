@@ -201,6 +201,15 @@
   font-family: 'Courier New', monospace;
 }
 
+.game-mvp-name {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-top: auto;
+  align-self: flex-start;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
 /* Game Detail */
 .game-detail {
   display: flex;
@@ -555,7 +564,7 @@
   .game-list-overlay {
     padding: 0 !important;
   }
-  
+
   .game-list-container {
     max-height: 100vh !important;
     max-width: 100vw !important;
@@ -563,56 +572,56 @@
     border: none !important;
     box-shadow: none !important;
   }
-  
+
   .game-list-header {
     padding: 0.5rem 0.75rem !important;
     border-bottom: none !important;
   }
-  
+
   .game-list-header h2 {
     font-size: 1rem !important;
   }
-  
+
   .close-btn {
     width: 28px !important;
     height: 28px !important;
     font-size: 1rem !important;
   }
-  
+
   .game-list-content {
     padding: 0.5rem !important;
     max-height: calc(100vh - 60px) !important;
   }
-  
+
   .games-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.4rem !important;
   }
-  
+
   .game-card {
     padding: 0.5rem !important;
     border: none !important;
     border-radius: 4px !important;
     margin-bottom: 0.4rem !important;
   }
-  
+
   .game-date {
     font-size: 0.65rem !important;
     margin-bottom: 0.2rem !important;
   }
-  
+
   .game-number {
     font-size: 0.7rem !important;
   }
-  
+
   .game-map {
     font-size: 0.7rem !important;
   }
-  
+
   .game-rounds {
     font-size: 0.65rem !important;
   }
-  
+
   .detail-header {
     flex-direction: row !important;
     gap: 0.5rem !important;
@@ -620,61 +629,61 @@
     border: none !important;
     flex-wrap: wrap;
   }
-  
+
   .game-info-header {
     justify-content: flex-start !important;
     gap: 0.5rem !important;
     font-size: 0.7rem !important;
   }
-  
+
   .player-row {
     flex-direction: row !important;
     gap: 0.3rem !important;
     padding: 0.3rem !important;
     flex-wrap: wrap;
   }
-  
+
   .player-stats {
     justify-content: flex-start !important;
     gap: 0.5rem !important;
     flex-wrap: wrap;
   }
-  
+
   .stat-item {
     min-width: auto !important;
     font-size: 0.65rem !important;
   }
-  
+
   .team-header {
     justify-content: flex-start !important;
     flex-wrap: wrap;
     gap: 0.3rem !important;
     padding: 0.3rem !important;
   }
-  
+
   .team-result {
     margin-left: 0 !important;
     font-size: 0.7rem !important;
   }
-  
+
   .mvp-section {
     padding: 0.5rem !important;
     border: none !important;
     margin: 0.3rem 0 !important;
   }
-  
+
   .mvp-info {
     flex-direction: row !important;
     gap: 0.5rem !important;
     flex-wrap: wrap;
   }
-  
+
   .date-group {
     padding: 0.5rem !important;
     border: none !important;
     margin-bottom: 0.5rem !important;
   }
-  
+
   .date-header {
     font-size: 0.8rem !important;
     margin-bottom: 0.3rem !important;
@@ -706,4 +715,3 @@
 .game-list-content::-webkit-scrollbar-thumb:hover {
   background: #c73650;
 }
-

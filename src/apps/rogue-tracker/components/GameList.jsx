@@ -22,7 +22,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
     if (initialBattleId && battles.length > 0 && !selectedGame) {
       // Agrupar batalhas por data (mesma lógica de groupBattlesByDate)
       const groupedBattles = {};
-      
+
       battles.forEach(battle => {
         const date = new Date(battle.createdAt?.toDate ? battle.createdAt.toDate() : battle.createdAt);
         const dateKey = date.toLocaleDateString('pt-PT', {
@@ -31,7 +31,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
           day: 'numeric',
           weekday: 'long'
         });
-        
+
         if (!groupedBattles[dateKey]) {
           groupedBattles[dateKey] = [];
         }
@@ -57,7 +57,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
           });
         });
       });
-      
+
       const gameWithDate = allGamesWithDate.find(g => g.id === initialBattleId);
       if (gameWithDate) {
         setSelectedGame(gameWithDate);
@@ -69,7 +69,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
   // Agrupar batalhas por data
   const groupBattlesByDate = () => {
     const groupedBattles = {};
-    
+
     battles.forEach(battle => {
       const date = new Date(battle.createdAt?.toDate ? battle.createdAt.toDate() : battle.createdAt);
       const dateKey = date.toLocaleDateString('pt-PT', {
@@ -78,7 +78,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
         day: 'numeric',
         weekday: 'long'
       });
-      
+
       if (!groupedBattles[dateKey]) {
         groupedBattles[dateKey] = [];
       }
@@ -138,7 +138,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
   // Calcular MVP do jogo
   const calculateMVP = (battle) => {
     const allPlayers = [...battle.team1, ...battle.team2];
-    
+
     // Pesos para cada estatística
     const weights = {
       win: 0.25,
@@ -158,16 +158,16 @@ const GameList = ({ onClose, initialBattleId = null }) => {
 
     // Calcular score para cada jogador
     const playerScores = allPlayers.map(player => {
-      const isWinner = (battle.team1.includes(player) && battle.result === 'win') || 
-                      (battle.team2.includes(player) && battle.result === 'loss');
-      
+      const isWinner = (battle.team1.includes(player) && battle.result === 'win') ||
+        (battle.team2.includes(player) && battle.result === 'loss');
+
       const winScore = isWinner ? 1 : 0;
       const downsScore = maxValues.downs > 0 ? (player.downs || 0) / maxValues.downs : 0;
       const damageScore = maxValues.damage > 0 ? (player.damage || 0) / maxValues.damage : 0;
       const revivesScore = maxValues.revives > 0 ? (player.revives || 0) / maxValues.revives : 0;
       const capturesScore = maxValues.captures > 0 ? (player.captures || 0) / maxValues.captures : 0;
 
-      const totalScore = 
+      const totalScore =
         (winScore * weights.win) +
         (downsScore * weights.downs) +
         (damageScore * weights.damage) +
@@ -221,6 +221,14 @@ const GameList = ({ onClose, initialBattleId = null }) => {
                             <div className="game-rounds">
                               {battle.team1Rounds || 0} - {battle.team2Rounds || 0}
                             </div>
+                            {(() => {
+                              const mvp = calculateMVP(battle);
+                              return (
+                                <div className="game-mvp-name">
+                                  {mvp.name}
+                                </div>
+                              );
+                            })()}
                           </div>
                         </div>
                       </button>
@@ -233,7 +241,7 @@ const GameList = ({ onClose, initialBattleId = null }) => {
             // Vista detalhada do jogo selecionado
             <div className="game-detail">
               <div className="detail-header">
-                <button 
+                <button
                   className="back-btn"
                   onClick={() => setSelectedGame(null)}
                 >

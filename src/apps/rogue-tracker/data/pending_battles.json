@@ -1,0 +1,358 @@
+[
+    {
+        "map": "Unknown",
+        "team1Rounds": 3,
+        "team2Rounds": 1,
+        "team1": [
+            {
+                "name": "BARROSA10",
+                "operator": "Unknown",
+                "elims": 31,
+                "downs": 18,
+                "assists": 14,
+                "revives": 3,
+                "damage": 3985,
+                "captures": 6
+            },
+            {
+                "name": "Benny_Fuego",
+                "operator": "Unknown",
+                "elims": 28,
+                "downs": 18,
+                "assists": 8,
+                "revives": 6,
+                "damage": 3191,
+                "captures": 2
+            },
+            {
+                "name": "franciscomrfe",
+                "operator": "Unknown",
+                "elims": 28,
+                "downs": 24,
+                "assists": 4,
+                "revives": 1,
+                "damage": 3983,
+                "captures": 2
+            },
+            {
+                "name": "miguel_paisana",
+                "operator": "Unknown",
+                "elims": 20,
+                "downs": 6,
+                "assists": 16,
+                "revives": 0,
+                "damage": 2470,
+                "captures": 4
+            }
+        ],
+        "team2": [
+            {
+                "name": "fifagomesg-19",
+                "operator": "Unknown",
+                "elims": 23,
+                "downs": 17,
+                "assists": 8,
+                "revives": 0,
+                "damage": 3348,
+                "captures": 1
+            },
+            {
+                "name": "Andre_santinho",
+                "operator": "Unknown",
+                "elims": 18,
+                "downs": 14,
+                "assists": 3,
+                "revives": 1,
+                "damage": 3238,
+                "captures": 8
+            },
+            {
+                "name": "DiogoFrancxssco",
+                "operator": "Unknown",
+                "elims": 16,
+                "downs": 16,
+                "assists": 5,
+                "revives": 2,
+                "damage": 2713,
+                "captures": 3
+            },
+            {
+                "name": "Duarte_Sogalho",
+                "operator": "Unknown",
+                "elims": 16,
+                "downs": 10,
+                "assists": 8,
+                "revives": 1,
+                "damage": 2120,
+                "captures": 2
+            }
+        ]
+    },
+    {
+        "map": "Unknown",
+        "team1Rounds": 3,
+        "team2Rounds": 2,
+        "team1": [
+            {
+                "name": "franciscomrfe",
+                "operator": "Unknown",
+                "elims": 44,
+                "downs": 40,
+                "assists": 6,
+                "revives": 1,
+                "damage": 6280,
+                "captures": 1
+            },
+            {
+                "name": "miguel_paisana",
+                "operator": "Unknown",
+                "elims": 34,
+                "downs": 14,
+                "assists": 21,
+                "revives": 0,
+                "damage": 4015,
+                "captures": 6
+            },
+            {
+                "name": "BARROSA10",
+                "operator": "Unknown",
+                "elims": 31,
+                "downs": 20,
+                "assists": 12,
+                "revives": 2,
+                "damage": 4486,
+                "captures": 9
+            },
+            {
+                "name": "Benny_Fuego",
+                "operator": "Unknown",
+                "elims": 17,
+                "downs": 8,
+                "assists": 8,
+                "revives": 1,
+                "damage": 1653,
+                "captures": 3
+            }
+        ],
+        "team2": [
+            {
+                "name": "fifagomesg-19",
+                "operator": "Unknown",
+                "elims": 40,
+                "downs": 30,
+                "assists": 9,
+                "revives": 2,
+                "damage": 5920,
+                "captures": 1
+            },
+            {
+                "name": "DiogoFrancxssco",
+                "operator": "Unknown",
+                "elims": 28,
+                "downs": 19,
+                "assists": 7,
+                "revives": 5,
+                "damage": 3123,
+                "captures": 0
+            },
+            {
+                "name": "Duarte_Sogalho",
+                "operator": "Unknown",
+                "elims": 25,
+                "downs": 18,
+                "assists": 10,
+                "revives": 1,
+                "damage": 3182,
+                "captures": 3
+            },
+            {
+                "name": "Andre_santinho",
+                "operator": "Unknown",
+                "elims": 24,
+                "downs": 14,
+                "assists": 8,
+                "revives": 0,
+                "damage": 2952,
+                "captures": 10
+            }
+        ]
+    },
+    {
+        "map": "Unknown",
+        "team1Rounds": 1,
+        "team2Rounds": 3,
+        "team1": [
+            {
+                "name": "DiogoFrancxssco",
+                "operator": "Unknown",
+                "elims": 23,
+                "downs": 17,
+                "assists": 6,
+                "revives": 0,
+                "damage": 3306,
+                "captures": 5
+            },
+            {
+                "name": "franciscomrfe",
+                "operator": "Unknown",
+                "elims": 21,
+                "downs": 13,
+                "assists": 7,
+                "revives": 2,
+                "damage": 3245,
+                "captures": 1
+            },
+            {
+                "name": "Gametti",
+                "operator": "Unknown",
+                "elims": 18,
+                "downs": 17,
+                "assists": 3,
+                "revives": 0,
+                "damage": 1943,
+                "captures": 0
+            },
+            {
+                "name": "Benny_Fuego",
+                "operator": "Unknown",
+                "elims": 18,
+                "downs": 12,
+                "assists": 5,
+                "revives": 2,
+                "damage": 2666,
+                "captures": 1
+            }
+        ],
+        "team2": [
+            {
+                "name": "fifagomesg-19",
+                "operator": "Unknown",
+                "elims": 35,
+                "downs": 22,
+                "assists": 14,
+                "revives": 3,
+                "damage": 4230,
+                "captures": 3
+            },
+            {
+                "name": "BARROSA10",
+                "operator": "Unknown",
+                "elims": 30,
+                "downs": 16,
+                "assists": 12,
+                "revives": 0,
+                "damage": 3802,
+                "captures": 7
+            },
+            {
+                "name": "Duarte_Sogalho",
+                "operator": "Unknown",
+                "elims": 26,
+                "downs": 20,
+                "assists": 7,
+                "revives": 1,
+                "damage": 3073,
+                "captures": 2
+            },
+            {
+                "name": "Andre_santinho",
+                "operator": "Unknown",
+                "elims": 18,
+                "downs": 11,
+                "assists": 6,
+                "revives": 3,
+                "damage": 2397,
+                "captures": 4
+            }
+        ]
+    },
+    {
+        "map": "Unknown",
+        "team1Rounds": 3,
+        "team2Rounds": 0,
+        "team1": [
+            {
+                "name": "BARROSA10",
+                "operator": "Unknown",
+                "elims": 24,
+                "downs": 15,
+                "assists": 8,
+                "revives": 1,
+                "damage": 3127,
+                "captures": 1
+            },
+            {
+                "name": "fifagomesg-19",
+                "operator": "Unknown",
+                "elims": 23,
+                "downs": 17,
+                "assists": 5,
+                "revives": 0,
+                "damage": 3036,
+                "captures": 1
+            },
+            {
+                "name": "Duarte_Sogalho",
+                "operator": "Unknown",
+                "elims": 18,
+                "downs": 14,
+                "assists": 7,
+                "revives": 0,
+                "damage": 1988,
+                "captures": 1
+            },
+            {
+                "name": "Andre_santinho",
+                "operator": "Unknown",
+                "elims": 13,
+                "downs": 4,
+                "assists": 5,
+                "revives": 3,
+                "damage": 1451,
+                "captures": 3
+            }
+        ],
+        "team2": [
+            {
+                "name": "franciscomrfe",
+                "operator": "Unknown",
+                "elims": 16,
+                "downs": 11,
+                "assists": 4,
+                "revives": 2,
+                "damage": 2045,
+                "captures": 0
+            },
+            {
+                "name": "Gametti",
+                "operator": "Unknown",
+                "elims": 14,
+                "downs": 12,
+                "assists": 4,
+                "revives": 0,
+                "damage": 1643,
+                "captures": 0
+            },
+            {
+                "name": "DiogoFrancxssco",
+                "operator": "Unknown",
+                "elims": 11,
+                "downs": 8,
+                "assists": 6,
+                "revives": 1,
+                "damage": 1430,
+                "captures": 1
+            },
+            {
+                "name": "Benny_Fuego",
+                "operator": "Unknown",
+                "elims": 9,
+                "downs": 6,
+                "assists": 3,
+                "revives": 0,
+                "damage": 1473,
+                "captures": 1
+            }
+        ]
+    }
+]
