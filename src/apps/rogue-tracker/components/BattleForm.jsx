@@ -404,10 +404,12 @@ const BattleForm = ({ onClose }) => {
   const getBattleSignature = (battle) => {
     // Create a unique string based on content
     const t1 = battle.team1 && battle.team1[0] ? battle.team1[0].name : '';
+    const t1Damage = battle.team1 && battle.team1[0] ? battle.team1[0].damage : '';
     const score = `${battle.team1Rounds}-${battle.team2Rounds}`;
     const map = battle.map || 'Unknown';
     // Use JSON.stringify of simplified object to avoid minor differences
-    return `SIG_${map}_${t1}_${score}`;
+    // Added t1Damage to signature to avoid collisions on Unknown map with same players
+    return `SIG_${map}_${t1}_${t1Damage}_${score}`;
   };
 
   const handleLoadPendingJson = () => {
