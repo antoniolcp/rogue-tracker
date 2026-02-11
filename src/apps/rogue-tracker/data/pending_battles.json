@@ -443,5 +443,94 @@
                 "captures": 2
             }
         ]
+    },
+    {
+        "map": "Unknown",
+        "team1Rounds": 3,
+        "team2Rounds": 2,
+        "team1": [
+            {
+                "name": "antoniolamycp9",
+                "operator": "Unknown",
+                "elims": 39,
+                "downs": 24,
+                "assists": 11,
+                "revives": 5,
+                "damage": 4592,
+                "captures": 9
+            },
+            {
+                "name": "Benny_Fuego",
+                "operator": "Unknown",
+                "elims": 32,
+                "downs": 16,
+                "assists": 16,
+                "revives": 0,
+                "damage": 3753,
+                "captures": 5
+            },
+            {
+                "name": "DiogoFrancxssco",
+                "operator": "Unknown",
+                "elims": 32,
+                "downs": 25,
+                "assists": 8,
+                "revives": 3,
+                "damage": 3474,
+                "captures": 5
+            },
+            {
+                "name": "Andre_santinho",
+                "operator": "Unknown",
+                "elims": 32,
+                "downs": 19,
+                "assists": 11,
+                "revives": 2,
+                "damage": 4875,
+                "captures": 10
+            }
+        ],
+        "team2": [
+            {
+                "name": "franciscomrfe",
+                "operator": "Unknown",
+                "elims": 37,
+                "downs": 22,
+                "assists": 20,
+                "revives": 1,
+                "damage": 5732,
+                "captures": 4
+            },
+            {
+                "name": "Gametti",
+                "operator": "Unknown",
+                "elims": 34,
+                "downs": 26,
+                "assists": 11,
+                "revives": 4,
+                "damage": 3802,
+                "captures": 10
+            },
+            {
+                "name": "tiagofranca6",
+                "operator": "Unknown",
+                "elims": 33,
+                "downs": 23,
+                "assists": 8,
+                "revives": 3,
+                "damage": 4645,
+                "captures": 8
+            },
+            {
+                "name": "martim1087",
+                "operator": "Unknown",
+                "elims": 20,
+                "downs": 18,
+                "assists": 4,
+                "revives": 2,
+                "damage": 2853,
+                "captures": 5
+            }
+        ]
     }
 ]

@@ -2,9 +2,10 @@ import { useState } from 'react'
 import './Hub.css'
 import RogueTracker from './apps/rogue-tracker/RogueTracker'
 import GTA from './apps/gta/GTA'
+import ChinsOlimpics from './apps/chins-olimpics/ChinsOlimpics'
 
 function Hub() {
-  const [currentApp, setCurrentApp] = useState(null) // null, 'rogue', 'gta'
+  const [currentApp, setCurrentApp] = useState(null) // null, 'rogue', 'gta', 'olimpics'
 
   const handleOpenRogue = () => {
     setCurrentApp('rogue')
@@ -12,6 +13,10 @@ function Hub() {
 
   const handleOpenGTA = () => {
     setCurrentApp('gta')
+  }
+
+  const handleOpenOlimpics = () => {
+    setCurrentApp('olimpics')
   }
 
   const handleBackToHub = () => {
@@ -25,6 +30,10 @@ function Hub() {
 
   if (currentApp === 'gta') {
     return <GTA onBackToHub={handleBackToHub} />
+  }
+
+  if (currentApp === 'olimpics') {
+    return <ChinsOlimpics onBackToHub={handleBackToHub} />
   }
 
   // Mostrar o hub principal
@@ -44,6 +53,12 @@ function Hub() {
             <div className="app-icon">🚗</div>
             <h2 className="app-name">GTA</h2>
             <div className="app-badge coming-soon">Ativo</div>
+          </div>
+
+          <div className="app-card" onClick={handleOpenOlimpics}>
+            <div className="app-icon">🏆</div>
+            <h2 className="app-name">Chins Olimpics</h2>
+            <div className="app-badge new">Novo</div>
           </div>
         </div>
       </div>
