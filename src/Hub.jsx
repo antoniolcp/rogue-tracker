@@ -47,7 +47,7 @@ export default function Hub() {
         >
           Los
           <br />
-          <span className="bg-gradient-to-r from-[#22d3ee] via-[#ff7a3d] to-[#ffb800] bg-clip-text text-transparent">Chinelos</span>
+          <span className="bg-gradient-to-r from-[#f2161d] via-[#facc15] to-[#5cb531] bg-clip-text text-transparent">Chinelos</span>
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="mt-6 max-w-md text-lg text-muted">
           Estatísticas, rivalidades e glória eterna. Escolhe o jogo.

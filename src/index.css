@@ -23,21 +23,23 @@
   --bronze: #d97a3f;
 
   /* Per-app accent (overridden by [data-app]) */
-  --accent: #22d3ee;
-  --accent-2: #ff7a3d;
-  --accent-fg: #03141a;
+  --accent: #f2161d;
+  --accent-2: #d9dde3;
+  --accent-fg: #ffffff;
 }
 
+/* Rogue Company: vermelho do logo (#F50C0C) + prateado */
 [data-app='rogue'] {
-  --accent: #22d3ee;
-  --accent-2: #ff7a3d;
-  --accent-fg: #03141a;
+  --accent: #f2161d;
+  --accent-2: #d9dde3;
+  --accent-fg: #ffffff;
 }
 
+/* GTA V: verde-oliva da marca (#488F21), aclarado para fundo escuro, + verde-lima */
 [data-app='gta'] {
-  --accent: #ffb800;
-  --accent-2: #ff6b00;
-  --accent-fg: #1a1200;
+  --accent: #5cb531;
+  --accent-2: #b9e46e;
+  --accent-fg: #0a1604;
 }
 
 [data-app='olimpics'] {

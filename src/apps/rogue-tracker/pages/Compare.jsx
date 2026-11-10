@@ -9,7 +9,7 @@ import { useRogueData } from '../data'
 import { ChartTooltip } from '../components/ChartTooltip'
 import { calculateComparisonStats, COMPARISON_METRICS, fmtInt } from '../utils/stats'
 
-const B = '#f472b6' // cor do jogador 2
+const B = '#60a5fa' // cor do jogador 2
 
 export default function Compare() {
   const { players, battles, mvpIndex, loading } = useRogueData()
@@ -84,7 +84,7 @@ export default function Compare() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-3xl border border-line bg-gradient-to-r from-accent/10 via-surface to-[#f472b6]/10 p-6"
+            className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-3xl border border-line bg-gradient-to-r from-accent/10 via-surface to-[#60a5fa]/10 p-6"
           >
             <Side stats={s1} color="var(--accent)" isWinner={winner === s1.name} />
             <div className="text-center">
@@ -116,11 +116,11 @@ export default function Compare() {
                       <div className="mb-1.5 flex items-center justify-between text-sm">
                         <span className={cn('font-semibold tabular', sig && a > b ? 'text-accent' : 'text-muted')}>{fmt(a)}</span>
                         <span className="text-xs text-muted">{m.label}</span>
-                        <span className={cn('font-semibold tabular', sig && b > a ? 'text-[#f472b6]' : 'text-muted')}>{fmt(b)}</span>
+                        <span className={cn('font-semibold tabular', sig && b > a ? 'text-[#60a5fa]' : 'text-muted')}>{fmt(b)}</span>
                       </div>
                       <div className="flex h-2 gap-0.5 overflow-hidden rounded-full">
                         <motion.div initial={{ width: 0 }} animate={{ width: `${(a / total) * 100}%` }} transition={{ duration: 0.6 }} className="rounded-l-full bg-accent" />
-                        <motion.div initial={{ width: 0 }} animate={{ width: `${(b / total) * 100}%` }} transition={{ duration: 0.6 }} className="rounded-r-full bg-[#f472b6]" />
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${(b / total) * 100}%` }} transition={{ duration: 0.6 }} className="rounded-r-full bg-[#60a5fa]" />
                       </div>
                     </div>
                   )

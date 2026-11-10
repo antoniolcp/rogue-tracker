@@ -24,7 +24,7 @@ export default function RogueLayout() {
         nav={nav}
         brand={
           <>
-            <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 font-display text-sm font-black text-accent-fg shadow-[0_0_24px_-6px_var(--accent)]">
+            <span className="grid size-9 place-items-center rounded-xl bg-accent font-display text-sm font-black text-accent-fg shadow-[0_0_24px_-6px_var(--accent)]">
               R
             </span>
             <span className="hidden font-display text-[15px] leading-tight font-bold tracking-tight sm:block">

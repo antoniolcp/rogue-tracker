@@ -142,7 +142,7 @@ export default function GameDetail() {
           )
         })}
       </div>
-      <p className="mt-3 text-xs text-subtle">Valores a azul = melhor do jogo nessa estatística.</p>
+      <p className="mt-3 text-xs text-subtle">Valores destacados = melhor do jogo nessa estatística.</p>
     </>
   )
 }
